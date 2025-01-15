@@ -1,0 +1,34 @@
+class {{ .Config.Name | classify }} < Formula
+  desc {{ .Config.Description | quote }}
+  homepage {{ .Config.GenerateURL | quote }}
+  version {{ .Tag | trimPrefix "v" | quote }}
+
+  {{- range .Config.ConflictsWith }}
+  conflicts_with {{ .Name | quote }}, :because => {{ .Reason | quote }}
+  {{- end }}
+
+  if Hardware::CPU.intel?
+    sha256 "{{ .IntelDownload.SHA256 }}"
+    url "{{ .IntelDownload.URL }}"
+  else
+    sha256 "{{ .ARMDownload.SHA256 }}"
+    url "{{ .ARMDownload.URL }}"
+  end
+
+  def install
+    {{- $binaryName := .Config.Name }}
+    bin.install "{{ $binaryName }}" {{- with .Config.RenameBinary }} => "{{ . }}"{{ end }}
+
+    {{- with .Config.InstallAliases }}
+    {{- range . }}
+    bin.install_symlink bin/"{{ $binaryName }}", "{{ . }}"
+    {{- end }}
+    {{- end }}
+  end
+
+  {{- with .Config.TestCommand }}
+  test do
+    system "#{bin}/{{ . }}"
+  end
+  {{- end }}
+end

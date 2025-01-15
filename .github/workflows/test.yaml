@@ -1,0 +1,35 @@
+name: "Test application on push"
+
+on:
+  push:
+
+jobs:
+  test:
+    name: "Test application"
+    runs-on: ubuntu-24.04
+    if: |
+      !contains(github.event.head_commit.message, '[ci skip]')
+    steps:
+
+      - name: "Checkout repository"
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Test application
+        run: go test -v ./...
+
+      - name: Dry-run the application itself
+        run: go run .
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Dry-run goreleaser application
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser
+          version: "~> v2"
+          args: release --snapshot --skip=publish --clean
