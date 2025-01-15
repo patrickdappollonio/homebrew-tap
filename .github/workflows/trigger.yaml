@@ -39,7 +39,7 @@ jobs:
           timezone: "America/New_York"
 
       - name: Run application to generate Formulas
-        run:
+        run: |
           rm -rf Formula/*.rb
           homebrew-tap --target "${{ github.event.inputs.target }}"
         env:
