@@ -27,4 +27,7 @@ class KubectlSlice < Formula
   def install
     bin.install "kubectl-slice"
   end
+  test do
+    system "#{bin}/kubectl-slice -v"
+  end
 end

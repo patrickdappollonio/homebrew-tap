@@ -27,4 +27,7 @@ class WaitFor < Formula
   def install
     bin.install "wait-for"
   end
+  test do
+    system "#{bin}/wait-for --version"
+  end
 end

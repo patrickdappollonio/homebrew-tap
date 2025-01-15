@@ -27,4 +27,7 @@ class Tabloid < Formula
   def install
     bin.install "tabloid"
   end
+  test do
+    system "#{bin}/tabloid -v"
+  end
 end
