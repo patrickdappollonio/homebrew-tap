@@ -6,16 +6,43 @@ import (
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
+	"regexp"
 	"strings"
+)
+
+var (
+	reARM    = regexp.MustCompile(`(\b|_|-)arm64(\b|_|-)`)
+	reLinux  = regexp.MustCompile(`(\b|_|-)linux(\b|_|-)`)
+	re64Bits = regexp.MustCompile(`(\b|_|-)(amd64|x?86_64)(\b|_|-)`)
+	reDarwin = regexp.MustCompile(`(\b|_|-)(darwin|macos)(\b|_|-)`)
 )
 
 type Download struct {
 	Filename string
 	URL      string
 	SHA256   string
-	IsMacOS  bool
-	IsIntel  bool
+}
+
+func (d Download) FilenameLower() string {
+	return strings.ToLower(d.Filename)
+}
+
+func (d Download) IsMacOS() bool {
+	return reDarwin.MatchString(d.FilenameLower())
+}
+
+func (d Download) IsLinux() bool {
+	return reLinux.MatchString(d.FilenameLower())
+}
+
+func (d Download) IsIntel() bool {
+	return re64Bits.MatchString(d.FilenameLower())
+}
+
+func (d Download) IsARM() bool {
+	return reARM.MatchString(d.FilenameLower())
 }
 
 var client = &http.Client{Transport: http.DefaultTransport}
@@ -97,20 +124,28 @@ func GetLatestDownloads(ctx context.Context, token, repoName string) (string, []
 			continue
 		}
 
-		if osarch := getOSArchFromURL(asset.BrowserDownloadURL); osarch.IsMacOS() && (osarch.IsIntel() || osarch.IsARM()) {
-			sha, err := calculateSHAForDownload(ctx, token, asset.BrowserDownloadURL)
-			if err != nil {
-				return "", nil, fmt.Errorf("could not calculate SHA for %q: %w", asset.BrowserDownloadURL, err)
-			}
-
-			qualifyingAssets = append(qualifyingAssets, Download{
-				Filename: asset.Name,
-				URL:      asset.BrowserDownloadURL,
-				SHA256:   sha,
-				IsMacOS:  osarch.IsMacOS(),
-				IsIntel:  osarch.IsIntel(),
-			})
+		dwn := Download{
+			Filename: asset.Name,
+			URL:      asset.BrowserDownloadURL,
 		}
+
+		if !(dwn.IsMacOS() || dwn.IsLinux()) {
+			log.Printf("skipping non MacOS or Linux asset %q", asset.BrowserDownloadURL)
+			continue
+		}
+
+		if !(dwn.IsIntel() || dwn.IsARM()) {
+			log.Printf("skipping non Intel or ARM asset %q", asset.BrowserDownloadURL)
+			continue
+		}
+
+		sha, err := calculateSHAForDownload(ctx, token, asset.BrowserDownloadURL)
+		if err != nil {
+			return "", nil, fmt.Errorf("could not calculate SHA for %q: %w", asset.BrowserDownloadURL, err)
+		}
+		dwn.SHA256 = sha
+
+		qualifyingAssets = append(qualifyingAssets, dwn)
 	}
 
 	if len(qualifyingAssets) == 0 {
@@ -127,41 +162,4 @@ func calculateSHAForDownload(ctx context.Context, token, url string) (string, er
 	}
 
 	return fmt.Sprintf("%x", sha256.Sum256(buf.Bytes())), nil
-}
-
-type assetOSArch struct {
-	OS   string
-	Arch string
-}
-
-func (a assetOSArch) IsMacOS() bool {
-	return a.OS == "darwin"
-}
-
-func (a assetOSArch) IsIntel() bool {
-	return a.Arch == "amd64"
-}
-
-func (a assetOSArch) IsARM() bool {
-	return a.Arch == "arm64"
-}
-
-func getOSArchFromURL(url string) assetOSArch {
-	var osarch assetOSArch
-
-	url = strings.ToLower(url)
-
-	if strings.Contains(url, "darwin") {
-		osarch.OS = "darwin"
-	}
-
-	if strings.Contains(url, "amd64") || strings.Contains(url, "x86_64") {
-		osarch.Arch = "amd64"
-	}
-
-	if strings.Contains(url, "arm64") {
-		osarch.Arch = "arm64"
-	}
-
-	return osarch
 }

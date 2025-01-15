@@ -1,3 +1,5 @@
+{{- $cfg := .Config }}
+{{- $tag := .Tag }}
 class {{ .Config.Name | classify }} < Formula
   desc {{ .Config.Description | quote }}
   homepage {{ .Config.GenerateURL | quote }}
@@ -7,13 +9,50 @@ class {{ .Config.Name | classify }} < Formula
   conflicts_with {{ .Name | quote }}, :because => {{ .Reason | quote }}
   {{- end }}
 
-  if Hardware::CPU.intel?
-    sha256 "{{ .IntelDownload.SHA256 }}"
-    url "{{ .IntelDownload.URL }}"
-  else
-    sha256 "{{ .ARMDownload.SHA256 }}"
-    url "{{ .ARMDownload.URL }}"
+
+  {{- if .MacOSDownloads }}
+  on_macos do
+    {{- range .MacOSDownloads }}
+
+    {{- if .IsARM }}
+    if Hardware::CPU.arm?
+      sha256 "{{ .SHA256 }}"
+      url "{{ .URL }}"
+    end
+    {{- end }}
+
+    {{- if .IsIntel }}
+    if Hardware::CPU.intel?
+      sha256 "{{ .SHA256 }}"
+      url "{{ .URL }}"
+    end
+    {{- end }}
+
+    {{- end }}
   end
+  {{- end }}
+
+  {{- if .LinuxDownloads }}
+  on_linux do
+    {{- range .LinuxDownloads }}
+
+    {{- if .IsARM }}
+    if Hardware::CPU.arm?
+      sha256 "{{ .SHA256 }}"
+      url "{{ .URL }}"
+    end
+    {{- end }}
+
+    {{- if .IsIntel }}
+    if Hardware::CPU.intel?
+      sha256 "{{ .SHA256 }}"
+      url "{{ .URL }}"
+    end
+    {{- end }}
+
+    {{- end }}
+  end
+  {{- end }}
 
   def install
     {{- $binaryName := .Config.Name }}

@@ -72,20 +72,20 @@ func GenerateFormula(config cfg.Config, tag string, downloads []github.Download)
 	})
 
 	payload := struct {
-		Config        cfg.Config
-		IntelDownload github.Download
-		ARMDownload   github.Download
-		Tag           string
+		Config         cfg.Config
+		MacOSDownloads []github.Download
+		LinuxDownloads []github.Download
+		Tag            string
 	}{
 		Config: config,
 		Tag:    tag,
 	}
 
 	for _, d := range downloads {
-		if d.IsIntel {
-			payload.IntelDownload = d
-		} else {
-			payload.ARMDownload = d
+		if d.IsMacOS() {
+			payload.MacOSDownloads = append(payload.MacOSDownloads, d)
+		} else if d.IsLinux() {
+			payload.LinuxDownloads = append(payload.LinuxDownloads, d)
 		}
 	}
 
