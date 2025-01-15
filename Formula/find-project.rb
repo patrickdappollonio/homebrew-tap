@@ -1,4 +1,3 @@
-
 class FindProject < Formula
   desc "Traverse through folders with ease!"
   homepage "https://github.com/patrickdappollonio/find-project"

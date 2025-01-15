@@ -1,4 +1,3 @@
-
 class HttpServer < Formula
   desc "A small application with no dependencies to expose a local folder as an HTTP server. It includes a file explorer and a Markdown renderer."
   homepage "https://www.httpserver.app"

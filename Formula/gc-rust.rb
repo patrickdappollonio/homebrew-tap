@@ -1,4 +1,3 @@
-
 class GcRust < Formula
   desc "Clone GitHub repositories like a champ!"
   homepage "https://github.com/patrickdappollonio/gc-rust"

@@ -1,4 +1,3 @@
-
 class Tabloid < Formula
   desc "tabloid is a simple command line tool to parse and filter column-based CLI outputs from commands like kubectl or docker."
   homepage "https://github.com/patrickdappollonio/tabloid"

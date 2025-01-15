@@ -89,7 +89,7 @@ func execute(configLocation, only string) error {
 			return fmt.Errorf("could not generate formula: %w", err)
 		}
 
-		if strings.TrimSpace(current.String()) == strings.TrimSpace(formula) {
+		if current.String() == formula {
 			log.Printf("Formula file %q is up to date, skipping...", formulaFile)
 			continue
 		}

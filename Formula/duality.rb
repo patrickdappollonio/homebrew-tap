@@ -1,4 +1,3 @@
-
 class Duality < Formula
   desc "Run multiple programs in parallel and wait for all to complete. A small command supervisor for your orchestration needs."
   homepage "https://github.com/patrickdappollonio/duality"

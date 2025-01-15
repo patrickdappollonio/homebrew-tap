@@ -1,5 +1,5 @@
-{{- $cfg := .Config }}
-{{- $tag := .Tag }}
+{{- $cfg := .Config -}}
+{{- $tag := .Tag -}}
 class {{ .Config.Name | classify }} < Formula
   desc {{ .Config.Description | quote }}
   homepage {{ .Config.GenerateURL | quote }}

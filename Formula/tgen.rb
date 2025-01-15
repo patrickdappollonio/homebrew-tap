@@ -1,4 +1,3 @@
-
 class Tgen < Formula
   desc "A template tool with no dependencies that works like Helm templates or Consul templates."
   homepage "https://github.com/patrickdappollonio/tgen"

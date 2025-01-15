@@ -1,4 +1,3 @@
-
 class WaitFor < Formula
   desc "A small, zero dependencies app that can be used as an init container to ping resources and check if they're available."
   homepage "https://github.com/patrickdappollonio/wait-for"
