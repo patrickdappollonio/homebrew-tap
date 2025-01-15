@@ -13,11 +13,11 @@ class Duality < Formula
     end
   end
   on_linux do
-    if Hardware::CPU.arm?
+    if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
       sha256 "9dce7d61e4b67cf64d9501e5b2bb3359be38a10976afe120dd345c2f795517cf"
       url "https://github.com/patrickdappollonio/duality/releases/download/v1.0.0/duality_linux_arm64.tar.gz"
     end
-    if Hardware::CPU.intel?
+    if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
       sha256 "fecf31acf7b59ae86402273bbaecfd8dd5f0b79609232c49a3390d7b63e8ebc7"
       url "https://github.com/patrickdappollonio/duality/releases/download/v1.0.0/duality_linux_x86_64.tar.gz"
     end

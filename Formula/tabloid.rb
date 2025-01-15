@@ -13,11 +13,11 @@ class Tabloid < Formula
     end
   end
   on_linux do
-    if Hardware::CPU.arm?
+    if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
       sha256 "10bf19beace0b4746fc036b9b9fefb47c1d002cb858ac1c9fc6ffcede42e068a"
       url "https://github.com/patrickdappollonio/tabloid/releases/download/v0.0.3/tabloid_0.0.3_linux_arm64.tar.gz"
     end
-    if Hardware::CPU.intel?
+    if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
       sha256 "64843392278672cb3cb02d1f22496b10290cf9f7ff65f7cd48a5684ae2755963"
       url "https://github.com/patrickdappollonio/tabloid/releases/download/v0.0.3/tabloid_0.0.3_linux_x86_64.tar.gz"
     end

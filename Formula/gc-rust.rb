@@ -13,11 +13,11 @@ class GcRust < Formula
     end
   end
   on_linux do
-    if Hardware::CPU.arm?
+    if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
       sha256 "93310557274c67e61805d34baa29ca0b3828dce39473c7d48d249f27f2cb9824"
       url "https://github.com/patrickdappollonio/gc-rust/releases/download/v0.1.2/gc-rust-v0.1.2-linux-arm64.tar.gz"
     end
-    if Hardware::CPU.intel?
+    if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
       sha256 "b1d7153ca341c7f780251a6fb6f24ca9047eb16ac7aa7465672c5a062ca8b93f"
       url "https://github.com/patrickdappollonio/gc-rust/releases/download/v0.1.2/gc-rust-v0.1.2-linux-x86_64.tar.gz"
     end

@@ -13,11 +13,11 @@ class KubectlSlice < Formula
     end
   end
   on_linux do
-    if Hardware::CPU.arm?
+    if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
       sha256 "a67bd8a292b7de9b7a55fb5a345df01d7c2a2283a1cb77e808f19b7f5434f1f7"
       url "https://github.com/patrickdappollonio/kubectl-slice/releases/download/v1.4.1/kubectl-slice_linux_arm64.tar.gz"
     end
-    if Hardware::CPU.intel?
+    if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
       sha256 "01d3ceae02fae67e93251c64ee53e335665ead65ee923aea650bc33a0c15b64f"
       url "https://github.com/patrickdappollonio/kubectl-slice/releases/download/v1.4.1/kubectl-slice_linux_x86_64.tar.gz"
     end

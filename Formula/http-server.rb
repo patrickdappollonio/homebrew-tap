@@ -13,11 +13,11 @@ class HttpServer < Formula
     end
   end
   on_linux do
-    if Hardware::CPU.arm?
+    if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
       sha256 "0424fe6ee17a7e1e7472bb6d090acabd478f66d0cf82377b9992022674da8556"
       url "https://github.com/patrickdappollonio/http-server/releases/download/v2.5.2/http-server_linux_arm64.tar.gz"
     end
-    if Hardware::CPU.intel?
+    if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
       sha256 "a19819b75f5d3b570786bc15c696796979b283930fe702e85c8b52766b46dbcb"
       url "https://github.com/patrickdappollonio/http-server/releases/download/v2.5.2/http-server_linux_x86_64.tar.gz"
     end

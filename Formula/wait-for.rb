@@ -13,11 +13,11 @@ class WaitFor < Formula
     end
   end
   on_linux do
-    if Hardware::CPU.arm?
+    if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
       sha256 "b2b49496749663912423e76a216d96a0dfe281006e45fab1b828510a2a51f072"
       url "https://github.com/patrickdappollonio/wait-for/releases/download/v1.2.1/wait-for_linux_arm64.tar.gz"
     end
-    if Hardware::CPU.intel?
+    if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
       sha256 "81f2af850251bb1afad9a1fa4f675301ab2869ecdd1076d7a263c5506270e8bd"
       url "https://github.com/patrickdappollonio/wait-for/releases/download/v1.2.1/wait-for_linux_x86_64.tar.gz"
     end
