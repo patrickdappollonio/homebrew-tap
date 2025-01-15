@@ -11,10 +11,14 @@ class {{ .Config.Name | classify }} < Formula
 
 
   {{- if .MacOSDownloads }}
+  #
+  # MacOS builds
+  #
   on_macos do
     {{- range .MacOSDownloads }}
 
-    {{- if .IsARM }}
+    {{- if .IsARM64 }}
+    # MacOS ARM64 builds
     if Hardware::CPU.arm?
       sha256 "{{ .SHA256 }}"
       url "{{ .URL }}"
@@ -22,6 +26,7 @@ class {{ .Config.Name | classify }} < Formula
     {{- end }}
 
     {{- if .IsIntel }}
+    # MacOS Intel builds
     if Hardware::CPU.intel?
       sha256 "{{ .SHA256 }}"
       url "{{ .URL }}"
@@ -33,17 +38,30 @@ class {{ .Config.Name | classify }} < Formula
   {{- end }}
 
   {{- if .LinuxDownloads }}
+  #
+  # Linux builds
+  #
   on_linux do
     {{- range .LinuxDownloads }}
 
-    {{- if .IsARM }}
+    {{- if and .IsARM64 }}
+    # Linux ARM64 builds
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
       sha256 "{{ .SHA256 }}"
       url "{{ .URL }}"
     end
     {{- end }}
 
+    {{- if and .IsARM }}
+    # Linux ARM (non-64) builds
+    if Hardware::CPU.arm? && !Hardware::CPU.is_64_bit?
+      sha256 "{{ .SHA256 }}"
+      url "{{ .URL }}"
+    end
+    {{- end }}
+
     {{- if .IsIntel }}
+    # Linux Intel 64bit builds
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
       sha256 "{{ .SHA256 }}"
       url "{{ .URL }}"

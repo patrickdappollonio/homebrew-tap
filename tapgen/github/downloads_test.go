@@ -9,6 +9,7 @@ func TestChecks(t *testing.T) {
 		WantLinux bool
 		WantIntel bool
 		WantARM   bool
+		WantARM64 bool
 	}{
 		{
 			URL:       "foo-darwin-amd64.tar.gz",
@@ -18,12 +19,18 @@ func TestChecks(t *testing.T) {
 		{
 			URL:       "duality_linux_arm64.tar.gz",
 			WantLinux: true,
-			WantARM:   true,
+			WantARM64: true,
 		},
 		{
 			URL:       "armageddon_linux_amd64.tar.gz",
 			WantLinux: true,
 			WantIntel: true,
+		},
+		{
+			URL:       "armageddon_linux_arm.tar.gz",
+			WantLinux: true,
+			WantARM:   true,
+			WantARM64: false,
 		},
 	}
 
@@ -39,6 +46,9 @@ func TestChecks(t *testing.T) {
 			}
 			if got := d.IsIntel(); got != c.WantIntel {
 				tt.Errorf("IsIntel() = %v; want %v", got, c.WantIntel)
+			}
+			if got := d.IsARM64(); got != c.WantARM64 {
+				tt.Errorf("IsARM() = %v; want %v", got, c.WantARM64)
 			}
 			if got := d.IsARM(); got != c.WantARM {
 				tt.Errorf("IsARM() = %v; want %v", got, c.WantARM)

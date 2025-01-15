@@ -13,7 +13,8 @@ import (
 )
 
 var (
-	reARM    = regexp.MustCompile(`(\b|_|-)arm64(\b|_|-)`)
+	reARM64  = regexp.MustCompile(`(\b|_|-)arm64(\b|_|-)`)
+	reARM    = regexp.MustCompile(`(\b|_|-)arm(\b|_|-)`)
 	reLinux  = regexp.MustCompile(`(\b|_|-)linux(\b|_|-)`)
 	re64Bits = regexp.MustCompile(`(\b|_|-)(amd64|x?86_64)(\b|_|-)`)
 	reDarwin = regexp.MustCompile(`(\b|_|-)(darwin|macos)(\b|_|-)`)
@@ -39,6 +40,10 @@ func (d Download) IsLinux() bool {
 
 func (d Download) IsIntel() bool {
 	return re64Bits.MatchString(d.FilenameLower())
+}
+
+func (d Download) IsARM64() bool {
+	return reARM64.MatchString(d.FilenameLower())
 }
 
 func (d Download) IsARM() bool {
@@ -134,8 +139,8 @@ func GetLatestDownloads(ctx context.Context, token, repoName string) (string, []
 			continue
 		}
 
-		if !(dwn.IsIntel() || dwn.IsARM()) {
-			log.Printf("skipping non Intel or ARM asset %q", asset.BrowserDownloadURL)
+		if !(dwn.IsIntel() || dwn.IsARM64() || dwn.IsARM()) {
+			log.Printf("skipping non Intel or ARM(64) asset %q", asset.BrowserDownloadURL)
 			continue
 		}
 
