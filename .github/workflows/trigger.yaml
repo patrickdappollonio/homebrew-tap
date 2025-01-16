@@ -13,7 +13,7 @@ permissions:
   contents: write
 
 env:
-  VERSION: "0.0.4"
+  VERSION: "0.0.5"
 
 jobs:
   update-readme:
