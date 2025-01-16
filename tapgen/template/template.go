@@ -33,6 +33,17 @@ var funcmap = template.FuncMap{
 	"lowerAlphaNum": LowercaseNoDashes,
 	"classify":      classify,
 	"now":           func() string { return time.Now().Format(time.RFC850) },
+	"indent":        indent,
+	"nindent":       nindent,
+}
+
+func indent(spaces int, v string) string {
+	pad := strings.Repeat(" ", spaces)
+	return pad + strings.Replace(v, "\n", "\n"+pad, -1)
+}
+
+func nindent(spaces int, v string) string {
+	return "\n" + indent(spaces, v)
 }
 
 func classify(str string) string {

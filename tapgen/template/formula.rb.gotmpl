@@ -4,6 +4,9 @@ class {{ .Config.Name | classify }} < Formula
   desc {{ .Config.Description | quote }}
   homepage {{ .Config.GenerateURL | quote }}
   version {{ .Tag | trimPrefix "v" | quote }}
+  {{- with .Config.License }}
+  license {{ . | quote }}
+  {{- end }}
 
   {{- range .Config.ConflictsWith }}
   conflicts_with {{ .Name | quote }}, :because => {{ .Reason | quote }}
@@ -86,6 +89,13 @@ class {{ .Config.Name | classify }} < Formula
   {{- with .Config.TestCommand }}
   test do
     system "#{bin}/{{ . }}"
+  end
+  {{- end }}
+
+  {{- with .Config.Caveats }}
+  def caveats
+    <<~EOS{{ . | nindent 6 }}
+    EOS
   end
   {{- end }}
 end

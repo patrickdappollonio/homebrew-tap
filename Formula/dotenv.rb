@@ -2,6 +2,7 @@ class Dotenv < Formula
   desc "An app to call other apps using customized environment variables."
   homepage "https://github.com/patrickdappollonio/dotenv"
   version "2.0.3"
+  license "MIT"
   #
   # MacOS builds
   #

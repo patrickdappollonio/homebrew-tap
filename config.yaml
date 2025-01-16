@@ -1,14 +1,20 @@
+# ------------------------------------------------------------------
+# Personal projects from https://www.github.com/patrickdappollonio
+# ------------------------------------------------------------------
 - name: http-server
   repository: patrickdappollonio/http-server
   description: "A small application with no dependencies to expose a local folder as an HTTP server. It includes a file explorer and a Markdown renderer."
   url: https://www.httpserver.app
+  license: MIT
 - name: kubectl-slice
   repository: patrickdappollonio/kubectl-slice
   description: "Split multiple Kubernetes files into smaller files with ease. Split multi-YAML files into individual files."
   test_command: "kubectl-slice -v"
+  license: MIT
 - name: tgen
   repository: patrickdappollonio/tgen
   description: "A template tool with no dependencies that works like Helm templates or Consul templates."
+  license: MIT
 - name: tabloid
   repository: patrickdappollonio/tabloid
   description: "tabloid is a simple command line tool to parse and filter column-based CLI outputs from commands like kubectl or docker."
@@ -17,15 +23,21 @@
   repository: patrickdappollonio/wait-for
   description: "A small, zero dependencies app that can be used as an init container to ping resources and check if they're available."
   test_command: "wait-for --version" # -v isn't supported
+  license: MIT
 - name: dotenv
   repository: patrickdappollonio/dotenv
   description: "An app to call other apps using customized environment variables."
+  license: MIT
 - name: find-project
   repository: patrickdappollonio/find-project
   description: "Traverse through folders with ease!"
+  license: MIT
 - name: gc-rust
   repository: patrickdappollonio/gc-rust
   description: "Clone GitHub repositories like a champ!"
+  caveats: |-
+    If you want to use "gc-rust" simply as "gc", ensure you create a function or alias for it.
+    See https://github.com/patrickdappollonio/gc-rust#usage for instructions on how to do so.
 - name: duality
   repository: patrickdappollonio/duality
   description: "Run multiple programs in parallel and wait for all to complete. A small command supervisor for your orchestration needs."

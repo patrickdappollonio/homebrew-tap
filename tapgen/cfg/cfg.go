@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/patrickdappollonio/homebrew-tap/tapgen/licenses"
 	"gopkg.in/yaml.v3"
 )
 
@@ -18,6 +19,8 @@ type Config struct {
 	InstallAliases []string        `yaml:"install_aliases"`
 	RenameBinary   string          `yaml:"rename_binary"`
 	ConflictsWith  []ConflictsWith `yaml:"conflicts_with"`
+	Caveats        string          `yaml:"caveats"`
+	License        string          `yaml:"license"`
 }
 
 type ConflictsWith struct {
@@ -43,6 +46,18 @@ func (c Config) GenerateLowercaseNameNoDashes() string {
 	}, name)
 }
 
+func (c Config) IsValidLicense() error {
+	if c.License == "" {
+		return nil
+	}
+
+	if valid := licenses.Valid(c.License); !valid {
+		return fmt.Errorf("license %s is not a valid SPDX license, see list at: https://spdx.org/licenses/", c.License)
+	}
+
+	return nil
+}
+
 func ParseConfig(location string) ([]Config, error) {
 	if location == "" {
 		location = "."
@@ -62,6 +77,12 @@ func ParseConfig(location string) ([]Config, error) {
 	var cfg []Config
 	if err := yaml.NewDecoder(f).Decode(&cfg); err != nil {
 		return nil, fmt.Errorf("could not decode %s: %w", fullpath, err)
+	}
+
+	for _, v := range cfg {
+		if err := v.IsValidLicense(); err != nil {
+			return nil, fmt.Errorf("could not validate license for %q: %w", v.Name, err)
+		}
 	}
 
 	return cfg, nil

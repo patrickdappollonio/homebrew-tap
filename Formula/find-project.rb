@@ -2,6 +2,7 @@ class FindProject < Formula
   desc "Traverse through folders with ease!"
   homepage "https://github.com/patrickdappollonio/find-project"
   version "1.0.0"
+  license "MIT"
   #
   # MacOS builds
   #

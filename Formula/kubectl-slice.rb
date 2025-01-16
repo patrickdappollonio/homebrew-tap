@@ -2,6 +2,7 @@ class KubectlSlice < Formula
   desc "Split multiple Kubernetes files into smaller files with ease. Split multi-YAML files into individual files."
   homepage "https://github.com/patrickdappollonio/kubectl-slice"
   version "1.4.1"
+  license "MIT"
   #
   # MacOS builds
   #

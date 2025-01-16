@@ -2,6 +2,7 @@ class Tgen < Formula
   desc "A template tool with no dependencies that works like Helm templates or Consul templates."
   homepage "https://github.com/patrickdappollonio/tgen"
   version "2.0.3"
+  license "MIT"
   #
   # MacOS builds
   #

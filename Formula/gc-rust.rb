@@ -36,4 +36,10 @@ class GcRust < Formula
   def install
     bin.install "gc-rust"
   end
+  def caveats
+    <<~EOS
+      If you want to use "gc-rust" simply as "gc", ensure you create a function or alias for it.
+      See https://github.com/patrickdappollonio/gc-rust#usage for instructions on how to do so.
+    EOS
+  end
 end
