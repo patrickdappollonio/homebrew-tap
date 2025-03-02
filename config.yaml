@@ -41,3 +41,6 @@
 - name: duality
   repository: patrickdappollonio/duality
   description: "Run multiple programs in parallel and wait for all to complete. A small command supervisor for your orchestration needs."
+- name: reverse-proxy-host
+  repository: patrickdappollonio/reverse-proxy-host
+  description: "Reverse a connection from a local service with a custom Host header onto a new port."
