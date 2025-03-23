@@ -44,3 +44,7 @@
 - name: reverse-proxy-host
   repository: patrickdappollonio/reverse-proxy-host
   description: "Reverse a connection from a local service with a custom Host header onto a new port."
+- name: helm-list-charts
+  repository: patrickdappollonio/helm-list-charts
+  description: "Navigate Helm chart indexes without adding them to your machine and with ease."
+  license: MIT
