@@ -1,46 +1,206 @@
-# PatrickDappollonio Homebrew Tap
+# Patrick's Homebrew Tap
 
-This repo holds a collection of Homebrew formulae for my software projects and potentially some projects I find noteworthy.
+This repo holds a collection of Homebrew formulae for my software projects and potentially other 3rd party applications that don't have a formula in the main Homebrew repository.
 
-### How do I install these formulae?
-
-Just `brew tap patrickdappollonio/tap` and then `brew install <formula>`.
-
-A short convenience version can also be used with:
+Any application from this page can be installed using:
 
 ```bash
-brew install patrickdappollonio/tap/<formula>
+brew install patrickdappollonio/tap/<application>
 ```
 
-The currently available formulae are in the [Formula](Formula/) directory.
+For instructions on how this repository works, please check [`USING.md`](./USING.md).
 
-If you're curious, most of my currently maintained repositories are offered here as a tap download. You can find any of my repos in [my GitHub profile](https://www.github.com/patrickdappollonio).
+The list of available applications is:
+* [`http-server`](#http-server)
+* [`kubectl-slice`](#kubectl-slice)
+* [`tgen`](#tgen)
+* [`tabloid`](#tabloid)
+* [`wait-for`](#wait-for)
+* [`dotenv`](#dotenv)
+* [`find-project`](#find-project)
+* [`gc-rust`](#gc-rust)
+* [`duality`](#duality)
+* [`reverse-proxy-host`](#reverse-proxy-host)
+* [`helm-list-charts`](#helm-list-charts)
+* [`wiump`](#wiump)
 
-### How does this work?
+## Applications
 
-This repository uses a tiny Go application that converts the repositories listed in [`config.yaml`](config.yaml) into Homebrew formulae.
+This is the list of available applications supported by this tap:
 
-This process runs every 4 hours automatically using GitHub Actions. The generated formulae are then pushed to the `Formula` directory in this repository.
+### `http-server`
 
-The application automatically detects the latest, non-draft, published version of the repository listed in the configuration file. It then generates a formula file with the necessary information to install the binary.
+<dl>
+  <dt><strong>Description:</strong></dt>
+  <dd>A small application with no dependencies to expose a local folder as an HTTP server. It includes a file explorer and a Markdown renderer.</dd>
+  <dt><strong>License:</strong></dt>
+  <dd>MIT</dd>
+  <dt><strong>Repository:</strong></dt>
+  <dd><a href="https://github.com/patrickdappollonio/http-server"><code>patrickdappollonio/http-server</code></a></dd>
+</dl>
 
-A configuration is defined as a list of repositories with the following settings:
-
-```yaml
-- name: example-app # binary name inside the compressed file
-  repository: patrickdappollonio/example-app # GitHub repository
-  description: "An example app" # description of the app
-  test_command: "example-app --version" # command to test the installation, can be empty
-  license: MIT # license of the app
-  install_aliases: # list of aliases to install the app, can be empty
-    - example
-  rename_binary: fooexample # rename the binary to this name upon installation, can be empty
-  conflicts_with: # list of homebrew formulae that conflict with this one, can be empty
-    - name: example
-      reason: 'Both install an "example" binary.'
-  caveats: |-
-    This is a caveat for the example app.
-    It can be multiline.
+```bash
+brew install patrickdappollonio/tap/http-server
 ```
 
-For details about each app, please refer to their respective repository.
+### `kubectl-slice`
+
+<dl>
+  <dt><strong>Description:</strong></dt>
+  <dd>Split multiple Kubernetes files into smaller files with ease. Split multi-YAML files into individual files.</dd>
+  <dt><strong>License:</strong></dt>
+  <dd>MIT</dd>
+  <dt><strong>Repository:</strong></dt>
+  <dd><a href="https://github.com/patrickdappollonio/kubectl-slice"><code>patrickdappollonio/kubectl-slice</code></a></dd>
+</dl>
+
+```bash
+brew install patrickdappollonio/tap/kubectl-slice
+```
+
+### `tgen`
+
+<dl>
+  <dt><strong>Description:</strong></dt>
+  <dd>A template tool with no dependencies that works like Helm templates or Consul templates.</dd>
+  <dt><strong>License:</strong></dt>
+  <dd>MIT</dd>
+  <dt><strong>Repository:</strong></dt>
+  <dd><a href="https://github.com/patrickdappollonio/tgen"><code>patrickdappollonio/tgen</code></a></dd>
+</dl>
+
+```bash
+brew install patrickdappollonio/tap/tgen
+```
+
+### `tabloid`
+
+<dl>
+  <dt><strong>Description:</strong></dt>
+  <dd>tabloid is a simple command line tool to parse and filter column-based CLI outputs from commands like kubectl or docker.</dd>
+  <dt><strong>Repository:</strong></dt>
+  <dd><a href="https://github.com/patrickdappollonio/tabloid"><code>patrickdappollonio/tabloid</code></a></dd>
+</dl>
+
+```bash
+brew install patrickdappollonio/tap/tabloid
+```
+
+### `wait-for`
+
+<dl>
+  <dt><strong>Description:</strong></dt>
+  <dd>A small, zero dependencies app that can be used as an init container to ping resources and check if they're available.</dd>
+  <dt><strong>License:</strong></dt>
+  <dd>MIT</dd>
+  <dt><strong>Repository:</strong></dt>
+  <dd><a href="https://github.com/patrickdappollonio/wait-for"><code>patrickdappollonio/wait-for</code></a></dd>
+</dl>
+
+```bash
+brew install patrickdappollonio/tap/wait-for
+```
+
+### `dotenv`
+
+<dl>
+  <dt><strong>Description:</strong></dt>
+  <dd>An app to call other apps using customized environment variables.</dd>
+  <dt><strong>License:</strong></dt>
+  <dd>MIT</dd>
+  <dt><strong>Repository:</strong></dt>
+  <dd><a href="https://github.com/patrickdappollonio/dotenv"><code>patrickdappollonio/dotenv</code></a></dd>
+</dl>
+
+```bash
+brew install patrickdappollonio/tap/dotenv
+```
+
+### `find-project`
+
+<dl>
+  <dt><strong>Description:</strong></dt>
+  <dd>Traverse through folders with ease!</dd>
+  <dt><strong>License:</strong></dt>
+  <dd>MIT</dd>
+  <dt><strong>Repository:</strong></dt>
+  <dd><a href="https://github.com/patrickdappollonio/find-project"><code>patrickdappollonio/find-project</code></a></dd>
+</dl>
+
+```bash
+brew install patrickdappollonio/tap/find-project
+```
+
+### `gc-rust`
+
+<dl>
+  <dt><strong>Description:</strong></dt>
+  <dd>Clone GitHub repositories like a champ!</dd>
+  <dt><strong>Repository:</strong></dt>
+  <dd><a href="https://github.com/patrickdappollonio/gc-rust"><code>patrickdappollonio/gc-rust</code></a></dd>
+</dl>
+
+> [!NOTE]
+> If you want to use "gc-rust" simply as "gc", ensure you create a function or alias for it.
+See https://github.com/patrickdappollonio/gc-rust#usage for instructions on how to do so.
+
+
+```bash
+brew install patrickdappollonio/tap/gc-rust
+```
+
+### `duality`
+
+<dl>
+  <dt><strong>Description:</strong></dt>
+  <dd>Run multiple programs in parallel and wait for all to complete. A small command supervisor for your orchestration needs.</dd>
+  <dt><strong>Repository:</strong></dt>
+  <dd><a href="https://github.com/patrickdappollonio/duality"><code>patrickdappollonio/duality</code></a></dd>
+</dl>
+
+```bash
+brew install patrickdappollonio/tap/duality
+```
+
+### `reverse-proxy-host`
+
+<dl>
+  <dt><strong>Description:</strong></dt>
+  <dd>Reverse a connection from a local service with a custom Host header onto a new port.</dd>
+  <dt><strong>Repository:</strong></dt>
+  <dd><a href="https://github.com/patrickdappollonio/reverse-proxy-host"><code>patrickdappollonio/reverse-proxy-host</code></a></dd>
+</dl>
+
+```bash
+brew install patrickdappollonio/tap/reverse-proxy-host
+```
+
+### `helm-list-charts`
+
+<dl>
+  <dt><strong>Description:</strong></dt>
+  <dd>Navigate Helm chart indexes without adding them to your machine and with ease.</dd>
+  <dt><strong>License:</strong></dt>
+  <dd>MIT</dd>
+  <dt><strong>Repository:</strong></dt>
+  <dd><a href="https://github.com/patrickdappollonio/helm-list-charts"><code>patrickdappollonio/helm-list-charts</code></a></dd>
+</dl>
+
+```bash
+brew install patrickdappollonio/tap/helm-list-charts
+```
+
+### `wiump`
+
+<dl>
+  <dt><strong>Description:</strong></dt>
+  <dd>Who is using my port? A simple application to tell you what app is using your port.</dd>
+  <dt><strong>License:</strong></dt>
+  <dd>MIT</dd>
+  <dt><strong>Repository:</strong></dt>
+  <dd><a href="https://github.com/patrickdappollonio/wiump"><code>patrickdappollonio/wiump</code></a></dd>
+</dl>
+
+```bash
+brew install patrickdappollonio/tap/wiump
+```

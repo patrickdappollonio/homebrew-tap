@@ -19,8 +19,10 @@ func Run() error {
 	var configLocation, onlygenerate string
 
 	cmd := &cobra.Command{
-		Use:   os.Args[0],
-		Short: "Generate Homebrew formulas for GitHub releases based off a config file.",
+		Use:           os.Args[0],
+		SilenceUsage:  true,
+		SilenceErrors: true,
+		Short:         "Generate Homebrew formulas for GitHub releases based off a config file.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return execute(configLocation, onlygenerate)
 		},
@@ -33,17 +35,19 @@ func Run() error {
 }
 
 func execute(configLocation, only string) error {
-	formulas, err := cfg.ParseConfig(configLocation)
+	all, err := cfg.ParseConfig(configLocation)
 	if err != nil {
 		return fmt.Errorf("could not parse config: %w", err)
 	}
 
+	formulas := make([]cfg.Config, 0, 1)
+
 	if only != "" {
 		found := false
 
-		for _, v := range formulas {
+		for _, v := range all {
 			if v.Name == only {
-				formulas = []cfg.Config{v}
+				formulas = append(formulas, v)
 				found = true
 				break
 			}
@@ -52,6 +56,8 @@ func execute(configLocation, only string) error {
 		if !found {
 			return fmt.Errorf("could not find package %q in the configuration", only)
 		}
+	} else {
+		formulas = append(formulas, all...)
 	}
 
 	log.Printf("Found %d formulas to generate", len(formulas))
@@ -107,6 +113,17 @@ func execute(configLocation, only string) error {
 		}
 
 		log.Printf("Formula file %q generated successfully", formulaFile)
+	}
+
+	log.Printf("Generating README file for %d formulas", len(all))
+	md, err := template.GenerateReadme(all)
+	if err != nil {
+		return fmt.Errorf("could not generate README file: %w", err)
+	}
+	log.Println("README file generated successfully")
+
+	if err := os.WriteFile("README.md", []byte(md), 0o644); err != nil {
+		return fmt.Errorf("could not write README file: %w", err)
 	}
 
 	return nil
