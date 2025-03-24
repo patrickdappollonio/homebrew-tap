@@ -1,0 +1,53 @@
+# Patrick's Homebrew Tap
+
+This repo holds a collection of Homebrew formulae for my software projects and potentially other 3rd party applications that don't have a formula in the main Homebrew repository.
+
+Any application from this page can be installed using:
+
+```bash
+brew install patrickdappollonio/tap/<application>
+```
+
+For instructions on how this repository works, please check [`USING.md`](./USING.md).
+
+The list of available applications is:
+
+{{- range .Configs }}
+* [`{{ .Name }}`](#{{ .Name }})
+{{- end }}
+
+## Applications
+
+This is the list of available applications supported by this tap:
+
+{{- range .Configs }}
+
+### `{{ .Name }}`
+
+<dl>
+  <dt><strong>Description:</strong></dt>
+  <dd>{{ .Description }}</dd>
+  {{- if .License }}
+  <dt><strong>License:</strong></dt>
+  <dd>{{ .License }}</dd>
+  {{- end }}
+  {{- if .InstallAliases }}
+  <dt><strong>Aliases:</strong></dt>
+  <dd>{{ stringsJoin .InstallAliases ", " }}</dd>
+  {{- end }}
+  <dt><strong>Repository:</strong></dt>
+  <dd><a href="https://github.com/{{ .Repository }}"><code>{{ .Repository }}</code></a></dd>
+</dl>
+
+{{- if .Caveats }}
+{{- printf "\n" }}
+> [!NOTE]
+> {{ .Caveats }}
+{{- printf "\n" }}
+{{- end }}
+
+```bash
+brew install patrickdappollonio/tap/{{ .Name }}
+```
+
+{{- end }}
