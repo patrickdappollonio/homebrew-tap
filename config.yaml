@@ -48,3 +48,7 @@
   repository: patrickdappollonio/helm-list-charts
   description: "Navigate Helm chart indexes without adding them to your machine and with ease."
   license: MIT
+- name: wiump
+  repository: patrickdappollonio/wiump
+  description: "Who is using my port? A simple application to tell you what app is using your port."
+  license: MIT
