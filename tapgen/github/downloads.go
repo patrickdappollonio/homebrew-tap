@@ -10,6 +10,9 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+	"time"
+
+	"github.com/patrickdappollonio/retryhttp"
 )
 
 var (
@@ -50,7 +53,23 @@ func (d Download) IsARM() bool {
 	return reARM.MatchString(d.FilenameLower())
 }
 
-var client = &http.Client{Transport: http.DefaultTransport}
+var client = retryhttp.New(
+	retryhttp.WithMaxRetries(3),
+	retryhttp.WithInitialBackoff(250*time.Millisecond),
+	retryhttp.WithBackoffMultiplier(2),
+	retryhttp.WithCondition(func(resp *http.Response, err error) bool {
+		if err != nil {
+			return true
+		}
+		// Sometimes GitHub returns a 403 Forbidden error for rate limiting, so this
+		// would attempt to retry the request some time after.
+		if resp.StatusCode == http.StatusForbidden {
+			return true
+		}
+
+		return false
+	}),
+)
 
 func doJSONGet(ctx context.Context, token, url string, v interface{}) error {
 	buf := new(bytes.Buffer)

@@ -1,6 +1,10 @@
 github.com/cpuguy83/go-md2man/v2 v2.0.4/go.mod h1:tgQtvFlXSQOSOSIRvRPT7W67SCa46tRHOmNcaadrF8o=
 github.com/inconshreveable/mousetrap v1.1.0 h1:wN+x4NVGpMsO7ErUn/mUI3vEoE6Jt13X2s0bqwp9tc8=
 github.com/inconshreveable/mousetrap v1.1.0/go.mod h1:vpF70FUmC8bwa3OWnCshd2FqLfsEA9PFc4w1p2J65bw=
+github.com/patrickdappollonio/retryhttp v0.0.0-20250331012006-ae828243033e h1:M05qJ7rHuVgXuOSkCjYFaZehxOooAuNXZEAxMJrDmYA=
+github.com/patrickdappollonio/retryhttp v0.0.0-20250331012006-ae828243033e/go.mod h1:lAXPoOmm1V+GghmqH8Pm8YvmGIz4iPB1Ew5qK5k0nZg=
+github.com/patrickdappollonio/retryhttp v1.0.0 h1:36Thew6FHKGjmW6MKfKyga7AeBAQNWUVZKXW/uThzl0=
+github.com/patrickdappollonio/retryhttp v1.0.0/go.mod h1:lAXPoOmm1V+GghmqH8Pm8YvmGIz4iPB1Ew5qK5k0nZg=
 github.com/russross/blackfriday/v2 v2.1.0/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=
 github.com/spf13/cobra v1.8.1 h1:e5/vxKd/rZsfSJMUX1agtjeTDf+qv1/JdBF8gg5k9ZM=
 github.com/spf13/cobra v1.8.1/go.mod h1:wHxEcudfqmLYa8iTfL+OuZPbBZkmvliBWKIezN3kD9Y=
