@@ -23,6 +23,7 @@ The list of available applications is:
 * [`reverse-proxy-host`](#reverse-proxy-host)
 * [`helm-list-charts`](#helm-list-charts)
 * [`wiump`](#wiump)
+* [`mcp-domaintools`](#mcp-domaintools)
 
 ## Applications
 
@@ -203,4 +204,19 @@ brew install patrickdappollonio/tap/helm-list-charts
 
 ```bash
 brew install patrickdappollonio/tap/wiump
+```
+
+### `mcp-domaintools`
+
+<dl>
+  <dt><strong>Description:</strong></dt>
+  <dd>An MCP server via STDIO to query DNS and WHOIS information.</dd>
+  <dt><strong>License:</strong></dt>
+  <dd>MIT</dd>
+  <dt><strong>Repository:</strong></dt>
+  <dd><a href="https://github.com/patrickdappollonio/mcp-domaintools"><code>patrickdappollonio/mcp-domaintools</code></a></dd>
+</dl>
+
+```bash
+brew install patrickdappollonio/tap/mcp-domaintools
 ```
