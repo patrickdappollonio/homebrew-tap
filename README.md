@@ -24,6 +24,7 @@ The list of available applications is:
 * [`helm-list-charts`](#helm-list-charts)
 * [`wiump`](#wiump)
 * [`mcp-domaintools`](#mcp-domaintools)
+* [`context-generator`](#context-generator)
 
 ## Applications
 
@@ -219,4 +220,19 @@ brew install patrickdappollonio/tap/wiump
 
 ```bash
 brew install patrickdappollonio/tap/mcp-domaintools
+```
+
+### `context-generator`
+
+<dl>
+  <dt><strong>Description:</strong></dt>
+  <dd>A fast, efficient command-line tool written in Rust that generates copy-pastable context from your source code, perfect for providing to AI assistants like ChatGPT, Claude, or Copilot.</dd>
+  <dt><strong>License:</strong></dt>
+  <dd>MIT</dd>
+  <dt><strong>Repository:</strong></dt>
+  <dd><a href="https://github.com/patrickdappollonio/context-generator"><code>patrickdappollonio/context-generator</code></a></dd>
+</dl>
+
+```bash
+brew install patrickdappollonio/tap/context-generator
 ```
