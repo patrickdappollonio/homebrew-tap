@@ -56,3 +56,7 @@
   repository: patrickdappollonio/mcp-domaintools
   description: "An MCP server via STDIO to query DNS and WHOIS information."
   license: MIT
+- name: context-generator
+  repository: patrickdappollonio/context-generator
+  description: "A fast, efficient command-line tool written in Rust that generates copy-pastable context from your source code, perfect for providing to AI assistants like ChatGPT, Claude, or Copilot."
+  license: MIT
