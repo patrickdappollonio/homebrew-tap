@@ -1,7 +1,7 @@
 class McpDomaintools < Formula
   desc "An MCP server via STDIO to query DNS and WHOIS information."
   homepage "https://github.com/patrickdappollonio/mcp-domaintools"
-  version "1.1.0"
+  version "1.2.0"
   license "MIT"
   #
   # MacOS builds
@@ -9,13 +9,13 @@ class McpDomaintools < Formula
   on_macos do
     # MacOS ARM64 builds
     if Hardware::CPU.arm?
-      sha256 "91f6e9211a623423e0356e7b446049e79351871f79b0f80b9848bc4d15f2d976"
-      url "https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.1.0/mcp-domaintools_darwin_arm64.tar.gz"
+      sha256 "9e40252237a3aa4a1c2bdaa16b265e0f871e8565f1da6ce3a7ef85df40b80580"
+      url "https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.2.0/mcp-domaintools_darwin_arm64.tar.gz"
     end
     # MacOS Intel builds
     if Hardware::CPU.intel?
-      sha256 "38807a4f71b6f2fe00bc2d00b15a3e9ddfc963a3c747eb85f330720b9d928f3f"
-      url "https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.1.0/mcp-domaintools_darwin_x86_64.tar.gz"
+      sha256 "d4a344e8b9cb75ebc6add09dff862a58b0a2260b74f03857521344cc01ac8b6b"
+      url "https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.2.0/mcp-domaintools_darwin_x86_64.tar.gz"
     end
   end
   #
@@ -24,18 +24,18 @@ class McpDomaintools < Formula
   on_linux do
     # Linux ARM (non-64) builds
     if Hardware::CPU.arm? && !Hardware::CPU.is_64_bit?
-      sha256 "28d2a9acfb31bc49ee62490606ba273d1ca3f2a1d204f653d3a06febebef6d64"
-      url "https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.1.0/mcp-domaintools_linux_arm.tar.gz"
+      sha256 "ced4d29ef42f76e433a995a866ac2882053f46c7677da43f2e0c4e963125d181"
+      url "https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.2.0/mcp-domaintools_linux_arm.tar.gz"
     end
     # Linux ARM64 builds
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      sha256 "8d22a087227efffd96a914a3ee027f0e78d164875ad9e8a1a19352c23f659a7f"
-      url "https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.1.0/mcp-domaintools_linux_arm64.tar.gz"
+      sha256 "337412ca627277e2ee13b114b34229d3d97ecb8ff792bad38dfcf1f420218908"
+      url "https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.2.0/mcp-domaintools_linux_arm64.tar.gz"
     end
     # Linux Intel 64bit builds
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
-      sha256 "ebc6c2d53db8a88f1035a503faaf06d3050247ad27503875c23fdea69f535c04"
-      url "https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.1.0/mcp-domaintools_linux_x86_64.tar.gz"
+      sha256 "01b1e47f4783f1e816d9be255023a9580a8e797708edba8edf316df9f89d0544"
+      url "https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.2.0/mcp-domaintools_linux_x86_64.tar.gz"
     end
   end
 
