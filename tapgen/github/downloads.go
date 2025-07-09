@@ -17,6 +17,35 @@ import (
 	"github.com/patrickdappollonio/retryhttp"
 )
 
+// HTTPError represents an HTTP error with additional context.
+type HTTPError struct {
+	URL        string
+	StatusCode int
+	Body       string
+	Err        error
+}
+
+// Error returns the error message with HTTP context.
+func (e *HTTPError) Error() string {
+	if e.StatusCode != 0 {
+		if e.Body != "" {
+			// Truncate body if it's too long
+			body := e.Body
+			if len(body) > 200 {
+				body = body[:200] + "..."
+			}
+			return fmt.Sprintf("HTTP %d for %s: %s (response: %s)", e.StatusCode, e.URL, e.Err.Error(), body)
+		}
+		return fmt.Sprintf("HTTP %d for %s: %s", e.StatusCode, e.URL, e.Err.Error())
+	}
+	return fmt.Sprintf("request to %s failed: %s", e.URL, e.Err.Error())
+}
+
+// Unwrap returns the underlying error.
+func (e *HTTPError) Unwrap() error {
+	return e.Err
+}
+
 // Compiled regular expressions for platform and architecture detection.
 var (
 	reARM64  = regexp.MustCompile(`(\b|_|-)arm64(\b|_|-)`)
@@ -112,7 +141,10 @@ func doJSONGet[T any](ctx context.Context, token, url string, v *T) error {
 func doGet(ctx context.Context, token, url string, buf *bytes.Buffer) error {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		return fmt.Errorf("failed to create request: %w", err)
+		return &HTTPError{
+			URL: url,
+			Err: fmt.Errorf("failed to create request: %w", err),
+		}
 	}
 
 	req.Header.Set("X-Github-Api-Version", "2022-11-28")
@@ -122,21 +154,70 @@ func doGet(ctx context.Context, token, url string, buf *bytes.Buffer) error {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return fmt.Errorf("failed to perform request: %w", err)
+		return enhanceErrorWithContext(url, token, err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+		body, _ := io.ReadAll(io.LimitReader(resp.Body, 1024))
+		return &HTTPError{
+			URL:        url,
+			StatusCode: resp.StatusCode,
+			Body:       string(body),
+			Err:        fmt.Errorf("unexpected status code: %d", resp.StatusCode),
+		}
 	}
 
 	if buf != nil {
 		if _, err := buf.ReadFrom(resp.Body); err != nil {
-			return fmt.Errorf("failed to read response body: %w", err)
+			return &HTTPError{
+				URL: url,
+				Err: fmt.Errorf("failed to read response body: %w", err),
+			}
 		}
 	}
 
 	return nil
+}
+
+// enhanceErrorWithContext tries to extract response information from retry errors.
+func enhanceErrorWithContext(url, token string, err error) error {
+	// Try to perform one more request to get the last response for debugging
+	// This is a best-effort attempt to get response context
+	req, reqErr := http.NewRequest(http.MethodGet, url, nil)
+	if reqErr != nil {
+		return &HTTPError{
+			URL: url,
+			Err: fmt.Errorf("failed to perform request: %w", err),
+		}
+	}
+
+	// Set the same headers as the original request
+	req.Header.Set("X-Github-Api-Version", "2022-11-28")
+	if token != "" {
+		req.Header.Set("Authorization", "Bearer "+token)
+	}
+
+	// Create a simple client without retries for this debug request
+	simpleClient := &http.Client{Timeout: 10 * time.Second}
+	resp, respErr := simpleClient.Do(req)
+	if respErr != nil {
+		return &HTTPError{
+			URL: url,
+			Err: fmt.Errorf("failed to perform request: %w", err),
+		}
+	}
+	defer resp.Body.Close()
+
+	// Read the response body (limit to avoid memory issues)
+	body, _ := io.ReadAll(io.LimitReader(resp.Body, 1024))
+
+	return &HTTPError{
+		URL:        url,
+		StatusCode: resp.StatusCode,
+		Body:       string(body),
+		Err:        fmt.Errorf("failed to perform request: %w", err),
+	}
 }
 
 // repositoryURL is the GitHub API URL template for fetching latest releases.
@@ -329,7 +410,10 @@ func isValidArchitecture(download Download) bool {
 func calculateSHAForDownload(ctx context.Context, token, url string) (string, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		return "", fmt.Errorf("failed to create request: %w", err)
+		return "", &HTTPError{
+			URL: url,
+			Err: fmt.Errorf("failed to create request: %w", err),
+		}
 	}
 
 	if token != "" {
@@ -338,17 +422,26 @@ func calculateSHAForDownload(ctx context.Context, token, url string) (string, er
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return "", fmt.Errorf("failed to perform request: %w", err)
+		return "", enhanceErrorWithContext(url, token, err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+		body, _ := io.ReadAll(io.LimitReader(resp.Body, 1024))
+		return "", &HTTPError{
+			URL:        url,
+			StatusCode: resp.StatusCode,
+			Body:       string(body),
+			Err:        fmt.Errorf("unexpected status code: %d", resp.StatusCode),
+		}
 	}
 
 	hasher := sha256.New()
 	if _, err := io.Copy(hasher, resp.Body); err != nil {
-		return "", fmt.Errorf("failed to calculate hash: %w", err)
+		return "", &HTTPError{
+			URL: url,
+			Err: fmt.Errorf("failed to calculate hash: %w", err),
+		}
 	}
 
 	return fmt.Sprintf("%x", hasher.Sum(nil)), nil

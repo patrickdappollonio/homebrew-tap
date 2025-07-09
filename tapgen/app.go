@@ -16,7 +16,7 @@ import (
 
 // Run executes the tapgen command-line application.
 func Run() error {
-	var configLocation, targetPackage string
+	var configLocation, targetPackage, readmeTemplate string
 
 	cmd := &cobra.Command{
 		Use:           os.Args[0],
@@ -24,18 +24,19 @@ func Run() error {
 		SilenceErrors: true,
 		Short:         "Generate Homebrew formulas for GitHub releases based off a config file.",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return execute(configLocation, targetPackage)
+			return execute(configLocation, targetPackage, readmeTemplate)
 		},
 	}
 
 	cmd.Flags().StringVarP(&configLocation, "config", "c", "config.yaml", "Location of the configuration file to use")
 	cmd.Flags().StringVarP(&targetPackage, "target", "t", "", "Only generate the formula for the specified package target as specified in the config file's \"name\" field")
+	cmd.Flags().StringVarP(&readmeTemplate, "readme-template", "r", "readme.md.gotmpl", "Path to the README template file")
 
 	return cmd.Execute()
 }
 
 // execute runs the main application logic.
-func execute(configLocation, targetPackage string) error {
+func execute(configLocation, targetPackage, readmeTemplate string) error {
 	configs, err := cfg.ParseConfig(configLocation)
 	if err != nil {
 		return fmt.Errorf("failed to parse config: %w", err)
@@ -55,7 +56,7 @@ func execute(configLocation, targetPackage string) error {
 		return err
 	}
 
-	return generateReadme(configs)
+	return generateReadme(configs, readmeTemplate)
 }
 
 // filterConfigs returns the subset of configs to process based on the target package.
@@ -144,10 +145,10 @@ func readFileIfExists(filename string) (string, error) {
 }
 
 // generateReadme generates the README file for all formulas.
-func generateReadme(configs []cfg.Config) error {
-	log.Printf("Generating README file for %d formulas", len(configs))
+func generateReadme(configs []cfg.Config, templatePath string) error {
+	log.Printf("Generating README file for %d formulas using template: %s", len(configs), templatePath)
 
-	content, err := template.GenerateReadme(configs)
+	content, err := template.GenerateReadme(configs, templatePath)
 	if err != nil {
 		return fmt.Errorf("failed to generate README file: %w", err)
 	}
