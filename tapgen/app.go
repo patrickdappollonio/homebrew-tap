@@ -30,8 +30,7 @@ func Run() error {
 
 	cmd.Flags().StringVarP(&configLocation, "config", "c", "config.yaml", "Location of the configuration file to use")
 	cmd.Flags().StringVarP(&targetPackage, "target", "t", "", "Only generate the formula for the specified package target as specified in the config file's \"name\" field")
-	cmd.Flags().StringVarP(&readmeTemplate, "readme-template", "r", "", "Path to the README template file (required)")
-	cmd.MarkFlagRequired("readme-template")
+	cmd.Flags().StringVarP(&readmeTemplate, "readme-template", "r", "readme.md.gotmpl", "Path to the README template file")
 
 	return cmd.Execute()
 }
