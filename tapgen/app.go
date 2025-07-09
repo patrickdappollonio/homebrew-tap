@@ -1,7 +1,6 @@
 package tapgen
 
 import (
-	"bytes"
 	"context"
 	"fmt"
 	"log"
@@ -15,8 +14,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Run executes the tapgen command-line application.
 func Run() error {
-	var configLocation, onlygenerate string
+	var configLocation, targetPackage string
 
 	cmd := &cobra.Command{
 		Use:           os.Args[0],
@@ -24,114 +24,135 @@ func Run() error {
 		SilenceErrors: true,
 		Short:         "Generate Homebrew formulas for GitHub releases based off a config file.",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return execute(configLocation, onlygenerate)
+			return execute(configLocation, targetPackage)
 		},
 	}
 
 	cmd.Flags().StringVarP(&configLocation, "config", "c", "config.yaml", "Location of the configuration file to use")
-	cmd.Flags().StringVarP(&onlygenerate, "target", "t", "", "Only generate the formula for the specified package target as specified in the config file's \"name\" field")
+	cmd.Flags().StringVarP(&targetPackage, "target", "t", "", "Only generate the formula for the specified package target as specified in the config file's \"name\" field")
 
 	return cmd.Execute()
 }
 
-func execute(configLocation, only string) error {
-	all, err := cfg.ParseConfig(configLocation)
+// execute runs the main application logic.
+func execute(configLocation, targetPackage string) error {
+	configs, err := cfg.ParseConfig(configLocation)
 	if err != nil {
-		return fmt.Errorf("could not parse config: %w", err)
+		return fmt.Errorf("failed to parse config: %w", err)
 	}
 
-	formulas := make([]cfg.Config, 0, 1)
-
-	if only != "" {
-		found := false
-
-		for _, v := range all {
-			if v.Name == only {
-				formulas = append(formulas, v)
-				found = true
-				break
-			}
-		}
-
-		if !found {
-			return fmt.Errorf("could not find package %q in the configuration", only)
-		}
-	} else {
-		formulas = append(formulas, all...)
+	formulas, err := filterConfigs(configs, targetPackage)
+	if err != nil {
+		return err
 	}
 
 	log.Printf("Found %d formulas to generate", len(formulas))
 
 	ctx := context.Background()
-	token := envdefault("GITHUB_TOKEN", "")
+	token := getGitHubToken()
 
-	for _, v := range formulas {
-		log.Printf("Fetching latest download for %q (repo: %q)", v.Name, v.Repository)
-		tag, downloads, err := github.GetLatestDownloads(ctx, token, v.Repository)
-		if err != nil {
-			return fmt.Errorf("could not get latest download for %q: %w", v.Name, err)
-		}
-
-		formulaFile := filepath.Join(
-			"Formula",
-			fmt.Sprintf("%s.rb", strings.ToLower(v.Name)),
-		)
-
-		log.Printf("Found %d downloads for %q (version: %s); generating formula file: %s", len(downloads), v.Name, tag, formulaFile)
-
-		f, err := os.OpenFile(formulaFile, os.O_CREATE|os.O_RDWR, 0o644)
-		if err != nil {
-			return fmt.Errorf("could not open file for writing: %w", err)
-		}
-		defer f.Close()
-
-		var current bytes.Buffer
-		if _, err := current.ReadFrom(f); err != nil {
-			return fmt.Errorf("could not read current formula file: %w", err)
-		}
-
-		formula, err := template.GenerateFormula(v, tag, downloads)
-		if err != nil {
-			return fmt.Errorf("could not generate formula: %w", err)
-		}
-
-		if current.String() == formula {
-			log.Printf("Formula file %q is up to date, skipping...", formulaFile)
-			continue
-		}
-
-		if err := f.Truncate(0); err != nil {
-			return fmt.Errorf("could not truncate formula file: %w", err)
-		}
-
-		if _, err = f.Seek(0, 0); err != nil {
-			return fmt.Errorf("could not seek to beginning of formula file: %w", err)
-		}
-
-		if _, err := f.WriteString(formula); err != nil {
-			return fmt.Errorf("could not write formula to file: %w", err)
-		}
-
-		log.Printf("Formula file %q generated successfully", formulaFile)
+	if err := generateFormulas(ctx, token, formulas); err != nil {
+		return err
 	}
 
-	log.Printf("Generating README file for %d formulas", len(all))
-	md, err := template.GenerateReadme(all)
-	if err != nil {
-		return fmt.Errorf("could not generate README file: %w", err)
-	}
-	log.Println("README file generated successfully")
+	return generateReadme(configs)
+}
 
-	if err := os.WriteFile("README.md", []byte(md), 0o644); err != nil {
-		return fmt.Errorf("could not write README file: %w", err)
+// filterConfigs returns the subset of configs to process based on the target package.
+func filterConfigs(configs []cfg.Config, targetPackage string) ([]cfg.Config, error) {
+	if targetPackage == "" {
+		return configs, nil
 	}
 
+	for _, config := range configs {
+		if config.Name == targetPackage {
+			return []cfg.Config{config}, nil
+		}
+	}
+
+	return nil, fmt.Errorf("package %q not found in configuration", targetPackage)
+}
+
+// generateFormulas generates Homebrew formula files for the given configs.
+func generateFormulas(ctx context.Context, token string, formulas []cfg.Config) error {
+	for _, config := range formulas {
+		if err := generateSingleFormula(ctx, token, config); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
-func envdefault(key, defval string) string {
-	if val := strings.TrimSpace(os.Getenv(key)); val != "" {
-		return val
+// generateSingleFormula generates a single Homebrew formula file.
+func generateSingleFormula(ctx context.Context, token string, config cfg.Config) error {
+	log.Printf("Fetching latest download for %q (repo: %q)", config.Name, config.Repository)
+
+	tag, downloads, err := github.GetLatestDownloads(ctx, token, config.Repository)
+	if err != nil {
+		return fmt.Errorf("failed to get latest download for %q: %w", config.Name, err)
 	}
-	return defval
+
+	formulaFile := filepath.Join("Formula", fmt.Sprintf("%s.rb", strings.ToLower(config.Name)))
+	log.Printf("Found %d downloads for %q (version: %s); generating formula file: %s", len(downloads), config.Name, tag, formulaFile)
+
+	newFormula, err := template.GenerateFormula(config, tag, downloads)
+	if err != nil {
+		return fmt.Errorf("failed to generate formula: %w", err)
+	}
+
+	return writeFormulaFile(formulaFile, newFormula)
+}
+
+// writeFormulaFile writes the formula content to a file, but only if it has changed.
+func writeFormulaFile(filename, content string) error {
+	currentContent, err := readFileIfExists(filename)
+	if err != nil {
+		return fmt.Errorf("failed to read existing formula file: %w", err)
+	}
+
+	if currentContent == content {
+		log.Printf("Formula file %q is up to date, skipping...", filename)
+		return nil
+	}
+
+	if err := os.WriteFile(filename, []byte(content), 0o644); err != nil {
+		return fmt.Errorf("failed to write formula file: %w", err)
+	}
+
+	log.Printf("Formula file %q generated successfully", filename)
+	return nil
+}
+
+// readFileIfExists reads a file if it exists, otherwise returns an empty string.
+func readFileIfExists(filename string) (string, error) {
+	content, err := os.ReadFile(filename)
+	if os.IsNotExist(err) {
+		return "", nil
+	}
+	if err != nil {
+		return "", err
+	}
+	return string(content), nil
+}
+
+// generateReadme generates the README file for all formulas.
+func generateReadme(configs []cfg.Config) error {
+	log.Printf("Generating README file for %d formulas", len(configs))
+
+	content, err := template.GenerateReadme(configs)
+	if err != nil {
+		return fmt.Errorf("failed to generate README file: %w", err)
+	}
+
+	if err := os.WriteFile("README.md", []byte(content), 0o644); err != nil {
+		return fmt.Errorf("failed to write README file: %w", err)
+	}
+
+	log.Println("README file generated successfully")
+	return nil
+}
+
+// getGitHubToken retrieves the GitHub token from environment variables.
+func getGitHubToken() string {
+	return strings.TrimSpace(os.Getenv("GITHUB_TOKEN"))
 }

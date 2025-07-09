@@ -1,3 +1,4 @@
+// Package licenses provides SPDX license validation functionality.
 package licenses
 
 // licenses is a list of licenses that are supported by Homebrew
@@ -257,7 +258,6 @@ var licenses = []string{
 	"fwlw",
 	"GCR-docs",
 	"GD",
-	"generic-xts",
 	"GFDL-1.1-invariants-only",
 	"GFDL-1.1-invariants-or-later",
 	"GFDL-1.1-no-invariants-only",
@@ -280,21 +280,20 @@ var licenses = []string{
 	"GL2PS",
 	"Glide",
 	"Glulxe",
-	"GLWTPL",
-	"gnuplot",
+	"GnuPG-exception-2.0",
+	"GnuPG-exception-3.0",
 	"GPL-1.0-only",
 	"GPL-1.0-or-later",
 	"GPL-2.0-only",
 	"GPL-2.0-or-later",
 	"GPL-3.0-only",
 	"GPL-3.0-or-later",
+	"GPL-CC-1.0",
 	"Graphics-Gems",
 	"gSOAP-1.3b",
 	"gtkbook",
-	"Gutmann",
 	"HaskellReport",
 	"hdparm",
-	"HIDAPI",
 	"Hippocratic-2.1",
 	"HP-1986",
 	"HP-1989",
@@ -303,17 +302,12 @@ var licenses = []string{
 	"HPND-doc",
 	"HPND-doc-sell",
 	"HPND-export-US",
-	"HPND-export-US-acknowledgement",
 	"HPND-export-US-modify",
-	"HPND-export2-US",
 	"HPND-Fenneberg-Livingston",
 	"HPND-INRIA-IMAG",
-	"HPND-Intel",
 	"HPND-Kevlin-Henney",
 	"HPND-Markus-Kuhn",
-	"HPND-merchantability-variant",
 	"HPND-MIT-disclaimer",
-	"HPND-Netrek",
 	"HPND-Pbmplus",
 	"HPND-sell-MIT-disclaimer-xserver",
 	"HPND-sell-regexpr",
@@ -333,7 +327,6 @@ var licenses = []string{
 	"Imlib2",
 	"Info-ZIP",
 	"Inner-Net-2.0",
-	"InnoSetup",
 	"Intel",
 	"Intel-ACPI",
 	"Interbase-1.0",
@@ -383,25 +376,19 @@ var licenses = []string{
 	"LPPL-1.2",
 	"LPPL-1.3a",
 	"LPPL-1.3c",
-	"lsof",
-	"Lucida-Bitmap-Fonts",
 	"LZMA-SDK-9.11-to-9.20",
 	"LZMA-SDK-9.22",
 	"Mackerras-3-Clause",
 	"Mackerras-3-Clause-acknowledgment",
-	"magaz",
-	"mailprio",
 	"MakeIndex",
 	"Martin-Birgmeier",
 	"McPhee-slideshow",
 	"metamail",
 	"Minpack",
-	"MIPS",
 	"MirOS",
 	"MIT",
 	"MIT-0",
 	"MIT-advertising",
-	"MIT-Click",
 	"MIT-CMU",
 	"MIT-enna",
 	"MIT-feh",
@@ -412,7 +399,6 @@ var licenses = []string{
 	"MIT-testregex",
 	"MIT-Wu",
 	"MITNFA",
-	"MMIXware",
 	"Motosoto",
 	"MPEG-SSG",
 	"mpi-permissive",
@@ -434,10 +420,9 @@ var licenses = []string{
 	"NASA-1.3",
 	"Naumen",
 	"NBPL-1.0",
-	"NCBI-PD",
 	"NCGL-UK-2.0",
-	"NCL",
 	"NCSA",
+	"Net-SNMP",
 	"NetCDF",
 	"Newsletr",
 	"NGPL",
@@ -457,13 +442,13 @@ var licenses = []string{
 	"NRL",
 	"NTP",
 	"NTP-0",
+	"Nunit",
 	"O-UDA-1.0",
 	"OAR",
 	"OCCT-PL",
 	"OCLC-2.0",
 	"ODbL-1.0",
 	"ODC-By-1.0",
-	"OFFIS",
 	"OFL-1.0",
 	"OFL-1.0-no-RFN",
 	"OFL-1.0-RFN",
@@ -654,12 +639,19 @@ var licenses = []string{
 	"ZPL-2.1",
 }
 
-func Valid(license string) bool {
-	for _, l := range licenses {
-		if l == license {
-			return true
-		}
-	}
+// validLicenses is a map for O(1) license lookup performance.
+var validLicenses map[string]bool
 
-	return false
+// init initializes the license lookup map for efficient validation.
+func init() {
+	validLicenses = make(map[string]bool, len(licenses))
+	for _, license := range licenses {
+		validLicenses[license] = true
+	}
+}
+
+// Valid checks if the given license is a valid SPDX license.
+// This function performs an O(1) lookup in the license map.
+func Valid(license string) bool {
+	return validLicenses[license]
 }
