@@ -42,9 +42,12 @@ func init() {
 
 // deduplicateDownloadsByArchitecture removes duplicate downloads for the same architecture,
 // preferring LIBC over MUSL when both are available for the same platform and architecture.
+// This function preserves the original order of downloads.
 func deduplicateDownloadsByArchitecture(downloads []github.Download) []github.Download {
 	// Create a map to track the best download for each architecture
 	architectureMap := make(map[string]github.Download)
+	// Keep track of order using a slice
+	var keyOrder []string
 
 	for _, download := range downloads {
 		// Create a unique key for platform + architecture combination
@@ -68,15 +71,16 @@ func deduplicateDownloadsByArchitecture(downloads []github.Download) []github.Do
 			}
 			// Otherwise, keep the existing one (first wins if both are same type)
 		} else {
-			// First download for this architecture
+			// First download for this architecture - record the order
 			architectureMap[key] = download
+			keyOrder = append(keyOrder, key)
 		}
 	}
 
-	// Convert map back to slice
+	// Convert map back to slice in original order
 	result := make([]github.Download, 0, len(architectureMap))
-	for _, download := range architectureMap {
-		result = append(result, download)
+	for _, key := range keyOrder {
+		result = append(result, architectureMap[key])
 	}
 
 	return result
