@@ -4,6 +4,8 @@ package template
 import (
 	"bytes"
 	"embed"
+	"fmt"
+	"os"
 	"strings"
 	"text/template"
 
@@ -117,16 +119,41 @@ func GenerateFormula(config cfg.Config, tag string, downloads []github.Download,
 	return buf.String(), nil
 }
 
-// GenerateReadme generates a README file from the given configurations.
-func GenerateReadme(configs []cfg.Config) (string, error) {
+// GenerateReadme generates a README file from the given configurations using the specified template.
+// The templatePath parameter is required.
+func GenerateReadme(configs []cfg.Config, templatePath string) (string, error) {
+	if templatePath == "" {
+		return "", fmt.Errorf("template path is required")
+	}
+
 	payload := ReadmePayload{
 		Configs: configs,
 	}
 
+	tmpl, err := createCustomTemplate(templatePath)
+	if err != nil {
+		return "", fmt.Errorf("failed to create template: %w", err)
+	}
+
 	var buf bytes.Buffer
-	if err := compiled.ExecuteTemplate(&buf, "readme.md.gotmpl", payload); err != nil {
-		return "", err
+	if err := tmpl.Execute(&buf, payload); err != nil {
+		return "", fmt.Errorf("failed to execute template: %w", err)
 	}
 
 	return buf.String(), nil
+}
+
+// createCustomTemplate creates a template from an external file with the same functions as the embedded templates.
+func createCustomTemplate(templatePath string) (*template.Template, error) {
+	content, err := os.ReadFile(templatePath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read template file %q: %w", templatePath, err)
+	}
+
+	tmpl, err := template.New("readme").Funcs(funcmap).Parse(string(content))
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse template file %q: %w", templatePath, err)
+	}
+
+	return tmpl, nil
 }

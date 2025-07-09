@@ -41,7 +41,7 @@ jobs:
       - name: Run application to generate Formulas
         run: |
           rm -rf Formula/*.rb README.md
-          homebrew-tap --target "${{ github.event.inputs.target }}"
+          homebrew-tap --readme-template readme.md.gotmpl --target "${{ github.event.inputs.target }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
