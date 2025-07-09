@@ -46,3 +46,9 @@ class KubectlSlice < Formula
     system "#{bin}/kubectl-slice -v"
   end
 end
+
+# The following cache data is used by tapgen to avoid re-downloading
+# GitHub release assets when they haven't changed. This improves
+# performance and reduces load on GitHub servers.
+# ------------------------------------------------------------------
+# TAPGEN_CACHE: {"tag":"v1.4.2","repository":"patrickdappollonio/kubectl-slice","cached_at":"2025-07-09T00:24:31.876752892-04:00","assets":[{"id":236309686,"filename":"kubectl-slice_darwin_arm64.tar.gz","url":"https://github.com/patrickdappollonio/kubectl-slice/releases/download/v1.4.2/kubectl-slice_darwin_arm64.tar.gz","sha256":"46dbfdb8635a015b9352d78b8865fd19ca10fd30933dc74ffbd208ace371033e"},{"id":236309685,"filename":"kubectl-slice_darwin_x86_64.tar.gz","url":"https://github.com/patrickdappollonio/kubectl-slice/releases/download/v1.4.2/kubectl-slice_darwin_x86_64.tar.gz","sha256":"90c1d2013bcf8ca71a0307da932e2d4ee2ad58578076256a8a4ded842291648a"},{"id":236309684,"filename":"kubectl-slice_linux_arm.tar.gz","url":"https://github.com/patrickdappollonio/kubectl-slice/releases/download/v1.4.2/kubectl-slice_linux_arm.tar.gz","sha256":"f486606fe4fb936644c56ec087342b212215162599bd8b9b896e8c3ebc658c56"},{"id":236309677,"filename":"kubectl-slice_linux_arm64.tar.gz","url":"https://github.com/patrickdappollonio/kubectl-slice/releases/download/v1.4.2/kubectl-slice_linux_arm64.tar.gz","sha256":"869d685033c4b186b5d5175b67a18c138e0117173b8713387038701486fb5737"},{"id":236309679,"filename":"kubectl-slice_linux_x86_64.tar.gz","url":"https://github.com/patrickdappollonio/kubectl-slice/releases/download/v1.4.2/kubectl-slice_linux_x86_64.tar.gz","sha256":"f5d99615ea4eafe4ff9e9258957753d3081e3f123d7c8818506b30c267060c22"}]}
