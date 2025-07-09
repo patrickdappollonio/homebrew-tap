@@ -22,15 +22,15 @@ class ContextGenerator < Formula
   # Linux builds
   #
   on_linux do
-    # Linux ARM64 builds
-    if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      sha256 "95dc1986cc74ac2197160d19f9f59fd4864b14c70a675d6681f28787929e425f"
-      url "https://github.com/patrickdappollonio/context-generator/releases/download/v1.0.0/context-generator-v1.0.0-linux-arm64.tar.gz"
-    end
     # Linux Intel 64bit builds
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
       sha256 "9ffaa676613c5b2166db72b8ead5a306ed5a79782031bb63ae19b2d97da0cfb8"
       url "https://github.com/patrickdappollonio/context-generator/releases/download/v1.0.0/context-generator-v1.0.0-linux-x86_64.tar.gz"
+    end
+    # Linux ARM64 builds
+    if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
+      sha256 "95dc1986cc74ac2197160d19f9f59fd4864b14c70a675d6681f28787929e425f"
+      url "https://github.com/patrickdappollonio/context-generator/releases/download/v1.0.0/context-generator-v1.0.0-linux-arm64.tar.gz"
     end
   end
 

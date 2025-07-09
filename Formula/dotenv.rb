@@ -22,15 +22,15 @@ class Dotenv < Formula
   # Linux builds
   #
   on_linux do
-    # Linux ARM64 builds
-    if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      sha256 "4e1cb2576129232f04b09252c51151dd877d461c095eb9d31e80f0b60660e959"
-      url "https://github.com/patrickdappollonio/dotenv/releases/download/v2.0.3/dotenv-v2.0.3-linux-arm64.tar.gz"
-    end
     # Linux Intel 64bit builds
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
       sha256 "f32812c2bbbb71e5f4c65896bbd7a88947a5ff356ae4cad96f0daf7dcf71acc5"
       url "https://github.com/patrickdappollonio/dotenv/releases/download/v2.0.3/dotenv-v2.0.3-linux-x86_64.tar.gz"
+    end
+    # Linux ARM64 builds
+    if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
+      sha256 "4e1cb2576129232f04b09252c51151dd877d461c095eb9d31e80f0b60660e959"
+      url "https://github.com/patrickdappollonio/dotenv/releases/download/v2.0.3/dotenv-v2.0.3-linux-arm64.tar.gz"
     end
   end
 

@@ -22,15 +22,15 @@ class Wiump < Formula
   # Linux builds
   #
   on_linux do
-    # Linux ARM64 builds
-    if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      sha256 "360bff46aadf7a21b12f8a4ed3018c8ac100af97fa196c6464e9d57084ca7357"
-      url "https://github.com/patrickdappollonio/wiump/releases/download/v1.0.0/wiump-v1.0.0-linux-arm64.tar.gz"
-    end
     # Linux Intel 64bit builds
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
       sha256 "02bc7bd763b73213b38f795ffaf831760f29b995d233281e675c8acb5292f4f4"
       url "https://github.com/patrickdappollonio/wiump/releases/download/v1.0.0/wiump-v1.0.0-linux-x86_64.tar.gz"
+    end
+    # Linux ARM64 builds
+    if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
+      sha256 "360bff46aadf7a21b12f8a4ed3018c8ac100af97fa196c6464e9d57084ca7357"
+      url "https://github.com/patrickdappollonio/wiump/releases/download/v1.0.0/wiump-v1.0.0-linux-arm64.tar.gz"
     end
   end
 

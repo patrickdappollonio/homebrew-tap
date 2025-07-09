@@ -26,15 +26,15 @@ class Tabloid < Formula
       sha256 "64843392278672cb3cb02d1f22496b10290cf9f7ff65f7cd48a5684ae2755963"
       url "https://github.com/patrickdappollonio/tabloid/releases/download/v0.0.3/tabloid_0.0.3_linux_x86_64.tar.gz"
     end
-    # Linux ARM (non-64) builds
-    if Hardware::CPU.arm? && !Hardware::CPU.is_64_bit?
-      sha256 "a961db06e40c72ea3b3827733e8999348c0789c88a24756890a3e8875e1f49dc"
-      url "https://github.com/patrickdappollonio/tabloid/releases/download/v0.0.3/tabloid_0.0.3_linux_arm.tar.gz"
-    end
     # Linux ARM64 builds
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
       sha256 "10bf19beace0b4746fc036b9b9fefb47c1d002cb858ac1c9fc6ffcede42e068a"
       url "https://github.com/patrickdappollonio/tabloid/releases/download/v0.0.3/tabloid_0.0.3_linux_arm64.tar.gz"
+    end
+    # Linux ARM (non-64) builds
+    if Hardware::CPU.arm? && !Hardware::CPU.is_64_bit?
+      sha256 "a961db06e40c72ea3b3827733e8999348c0789c88a24756890a3e8875e1f49dc"
+      url "https://github.com/patrickdappollonio/tabloid/releases/download/v0.0.3/tabloid_0.0.3_linux_arm.tar.gz"
     end
   end
 

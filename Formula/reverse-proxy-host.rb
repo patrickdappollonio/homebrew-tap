@@ -21,20 +21,20 @@ class ReverseProxyHost < Formula
   # Linux builds
   #
   on_linux do
-    # Linux ARM (non-64) builds
-    if Hardware::CPU.arm? && !Hardware::CPU.is_64_bit?
-      sha256 "7485f6488b5b9c0f5b80d00aa0eaccaac9cc69d0120372925b7c197103d3230f"
-      url "https://github.com/patrickdappollonio/reverse-proxy-host/releases/download/v1.0.0/reverse-proxy-host_linux_arm.tar.gz"
+    # Linux Intel 64bit builds
+    if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
+      sha256 "00a2cdcb486fe7ba0656e05d8a16e83cb9daf2b53ae4afd2215c11f45173aef5"
+      url "https://github.com/patrickdappollonio/reverse-proxy-host/releases/download/v1.0.0/reverse-proxy-host_linux_x86_64.tar.gz"
     end
     # Linux ARM64 builds
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
       sha256 "58c20ccca3e218cdc9a751e64913a917b45f8fa634402f55ebdc1c0b690b336b"
       url "https://github.com/patrickdappollonio/reverse-proxy-host/releases/download/v1.0.0/reverse-proxy-host_linux_arm64.tar.gz"
     end
-    # Linux Intel 64bit builds
-    if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
-      sha256 "00a2cdcb486fe7ba0656e05d8a16e83cb9daf2b53ae4afd2215c11f45173aef5"
-      url "https://github.com/patrickdappollonio/reverse-proxy-host/releases/download/v1.0.0/reverse-proxy-host_linux_x86_64.tar.gz"
+    # Linux ARM (non-64) builds
+    if Hardware::CPU.arm? && !Hardware::CPU.is_64_bit?
+      sha256 "7485f6488b5b9c0f5b80d00aa0eaccaac9cc69d0120372925b7c197103d3230f"
+      url "https://github.com/patrickdappollonio/reverse-proxy-host/releases/download/v1.0.0/reverse-proxy-host_linux_arm.tar.gz"
     end
   end
 

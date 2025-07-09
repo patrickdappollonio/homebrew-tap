@@ -22,15 +22,15 @@ class FindProject < Formula
   # Linux builds
   #
   on_linux do
-    # Linux ARM64 builds
-    if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      sha256 "4252233167235660b33e1476eef073c625e0a5268ddecb7e3853a671d79518f6"
-      url "https://github.com/patrickdappollonio/find-project/releases/download/v1.0.0/find-project-v1.0.0-linux-arm64.tar.gz"
-    end
     # Linux Intel 64bit builds
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
       sha256 "f2b029487933af98f29988f16b9cbf608b0968f48bc299f69694145a6bf57271"
       url "https://github.com/patrickdappollonio/find-project/releases/download/v1.0.0/find-project-v1.0.0-linux-x86_64.tar.gz"
+    end
+    # Linux ARM64 builds
+    if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
+      sha256 "4252233167235660b33e1476eef073c625e0a5268ddecb7e3853a671d79518f6"
+      url "https://github.com/patrickdappollonio/find-project/releases/download/v1.0.0/find-project-v1.0.0-linux-arm64.tar.gz"
     end
   end
 
