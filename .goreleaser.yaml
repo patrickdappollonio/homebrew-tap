@@ -9,6 +9,7 @@ builds:
     goarch:
       - amd64
       - arm64
+    no_unique_dist_dir: true
     flags:
       - -trimpath
     ldflags:
@@ -20,6 +21,9 @@ archives:
       {{- if eq .Arch "amd64" }}x86_64
       {{- else if eq .Arch "386" }}i386
       {{- else }}{{ .Arch }}{{ end }}
+    files:
+      - README.md
+      - LICENSE
 checksum:
   name_template: "checksums.txt"
 snapshot:
