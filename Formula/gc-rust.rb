@@ -21,15 +21,15 @@ class GcRust < Formula
   # Linux builds
   #
   on_linux do
-    # Linux ARM64 builds
-    if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      sha256 "1273dba65c5dea4bbdfca4413ffccdcc64967fca68658cb4f9d57ad5fe7a3112"
-      url "https://github.com/patrickdappollonio/gc-rust/releases/download/v0.1.3/gc-rust-v0.1.3-linux-arm64.tar.gz"
-    end
     # Linux Intel 64bit builds
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
       sha256 "aabd0cfcf215dfc47f6b6ffe66a1f0c6e55bf93e699c0be755e6a723128ea7e3"
       url "https://github.com/patrickdappollonio/gc-rust/releases/download/v0.1.3/gc-rust-v0.1.3-linux-x86_64.tar.gz"
+    end
+    # Linux ARM64 builds
+    if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
+      sha256 "1273dba65c5dea4bbdfca4413ffccdcc64967fca68658cb4f9d57ad5fe7a3112"
+      url "https://github.com/patrickdappollonio/gc-rust/releases/download/v0.1.3/gc-rust-v0.1.3-linux-arm64.tar.gz"
     end
   end
 

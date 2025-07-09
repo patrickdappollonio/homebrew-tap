@@ -7,15 +7,15 @@ class McpDomaintools < Formula
   # MacOS builds
   #
   on_macos do
-    # MacOS Intel builds
-    if Hardware::CPU.intel?
-      sha256 "d4a344e8b9cb75ebc6add09dff862a58b0a2260b74f03857521344cc01ac8b6b"
-      url "https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.2.0/mcp-domaintools_darwin_x86_64.tar.gz"
-    end
     # MacOS ARM64 builds
     if Hardware::CPU.arm?
       sha256 "9e40252237a3aa4a1c2bdaa16b265e0f871e8565f1da6ce3a7ef85df40b80580"
       url "https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.2.0/mcp-domaintools_darwin_arm64.tar.gz"
+    end
+    # MacOS Intel builds
+    if Hardware::CPU.intel?
+      sha256 "d4a344e8b9cb75ebc6add09dff862a58b0a2260b74f03857521344cc01ac8b6b"
+      url "https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.2.0/mcp-domaintools_darwin_x86_64.tar.gz"
     end
   end
   #

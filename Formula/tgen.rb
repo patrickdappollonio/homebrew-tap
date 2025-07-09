@@ -22,15 +22,15 @@ class Tgen < Formula
   # Linux builds
   #
   on_linux do
-    # Linux ARM64 builds
-    if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      sha256 "c0f64a7744d99cf7d62bae809d3f478aee0e4c7f7ebd389df58fcd99d604a1e2"
-      url "https://github.com/patrickdappollonio/tgen/releases/download/v2.0.3/tgen_2.0.3_linux_arm64.tar.gz"
-    end
     # Linux Intel 64bit builds
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
       sha256 "8270ccef554191dd2867af32763aad1b24c919e28c65624e5cde74d1a00a9c3e"
       url "https://github.com/patrickdappollonio/tgen/releases/download/v2.0.3/tgen_2.0.3_linux_x86_64.tar.gz"
+    end
+    # Linux ARM64 builds
+    if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
+      sha256 "c0f64a7744d99cf7d62bae809d3f478aee0e4c7f7ebd389df58fcd99d604a1e2"
+      url "https://github.com/patrickdappollonio/tgen/releases/download/v2.0.3/tgen_2.0.3_linux_arm64.tar.gz"
     end
   end
 

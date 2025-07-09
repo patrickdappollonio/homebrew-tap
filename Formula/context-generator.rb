@@ -7,15 +7,15 @@ class ContextGenerator < Formula
   # MacOS builds
   #
   on_macos do
-    # MacOS Intel builds
-    if Hardware::CPU.intel?
-      sha256 "63694e77c3adada38ec1d6b7d15ee6115ea73277610939ae4fb4595c064dc82e"
-      url "https://github.com/patrickdappollonio/context-generator/releases/download/v1.0.0/context-generator-v1.0.0-darwin-x86_64.tar.gz"
-    end
     # MacOS ARM64 builds
     if Hardware::CPU.arm?
       sha256 "5efd686785ac51133b90011189460f04fd325c9046596f5e4500e67454da13d6"
       url "https://github.com/patrickdappollonio/context-generator/releases/download/v1.0.0/context-generator-v1.0.0-darwin-arm64.tar.gz"
+    end
+    # MacOS Intel builds
+    if Hardware::CPU.intel?
+      sha256 "63694e77c3adada38ec1d6b7d15ee6115ea73277610939ae4fb4595c064dc82e"
+      url "https://github.com/patrickdappollonio/context-generator/releases/download/v1.0.0/context-generator-v1.0.0-darwin-x86_64.tar.gz"
     end
   end
   #
