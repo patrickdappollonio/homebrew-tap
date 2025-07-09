@@ -99,3 +99,8 @@ class {{ .Config.Name | classify }} < Formula
   end
   {{- end }}
 end
+
+# The following cache data is used by tapgen to avoid re-downloading
+# GitHub release assets when they haven't changed. This improves
+# performance and reduces load on GitHub servers.
+{{ .CacheComment }}

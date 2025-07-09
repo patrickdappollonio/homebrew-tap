@@ -25,6 +25,7 @@ type FormulaPayload struct {
 	MacOSDownloads []github.Download
 	LinuxDownloads []github.Download
 	Tag            string
+	CacheComment   string
 }
 
 // ReadmePayload represents the data structure passed to README templates.
@@ -80,10 +81,19 @@ func deduplicateDownloadsByArchitecture(downloads []github.Download) []github.Do
 }
 
 // GenerateFormula generates a Homebrew formula from the given configuration and downloads.
-func GenerateFormula(config cfg.Config, tag string, downloads []github.Download) (string, error) {
+func GenerateFormula(config cfg.Config, tag string, downloads []github.Download, cache *github.FormulaCache) (string, error) {
 	payload := FormulaPayload{
 		Config: config,
 		Tag:    tag,
+	}
+
+	// Generate cache comment if cache is provided
+	if cache != nil {
+		cacheComment, err := github.FormatCacheComment(cache)
+		if err != nil {
+			return "", err
+		}
+		payload.CacheComment = cacheComment
 	}
 
 	// Separate downloads by platform and deduplicate by architecture
