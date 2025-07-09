@@ -9,7 +9,6 @@ builds:
     goarch:
       - amd64
       - arm64
-    no_unique_dist_dir: true
     flags:
       - -trimpath
     ldflags:
