@@ -33,6 +33,22 @@ type Download struct {
 	SHA256   string
 }
 
+// CachedAsset represents a cached asset with its GitHub ID and calculated SHA256.
+type CachedAsset struct {
+	ID       int64  `json:"id"`
+	Filename string `json:"filename"`
+	URL      string `json:"url"`
+	SHA256   string `json:"sha256"`
+}
+
+// FormulaCache represents cached data for a Homebrew formula.
+type FormulaCache struct {
+	Tag        string        `json:"tag"`
+	Repository string        `json:"repository"`
+	CachedAt   time.Time     `json:"cached_at"`
+	Assets     []CachedAsset `json:"assets"`
+}
+
 // FilenameLower returns the filename in lowercase for case-insensitive comparisons.
 func (d Download) FilenameLower() string {
 	return strings.ToLower(d.Filename)
@@ -136,12 +152,14 @@ type release struct {
 
 // releaseAsset represents a single asset in a GitHub release.
 type releaseAsset struct {
+	ID                 int64  `json:"id"`
 	Name               string `json:"name"`
 	State              string `json:"state"`
 	BrowserDownloadURL string `json:"browser_download_url"`
 }
 
 // GetLatestDownloads fetches the latest release downloads for the specified repository.
+// It uses caching to avoid downloading files when asset IDs haven't changed.
 func GetLatestDownloads(ctx context.Context, token, repoName string) (string, []Download, error) {
 	url := fmt.Sprintf(repositoryURL, repoName)
 
@@ -164,6 +182,101 @@ func GetLatestDownloads(ctx context.Context, token, repoName string) (string, []
 	}
 
 	return rel.TagName, qualifyingAssets, nil
+}
+
+// GetLatestDownloadsWithCache fetches the latest release downloads using cache when possible.
+func GetLatestDownloadsWithCache(ctx context.Context, token, repoName string, existingCache *FormulaCache) (string, []Download, *FormulaCache, error) {
+	url := fmt.Sprintf(repositoryURL, repoName)
+
+	var rel release
+	if err := doJSONGet(ctx, token, url, &rel); err != nil {
+		return "", nil, nil, fmt.Errorf("failed to get latest release: %w", err)
+	}
+
+	if len(rel.Assets) == 0 {
+		return "", nil, nil, fmt.Errorf("no assets found for release %s", rel.TagName)
+	}
+
+	// Check if we can use cache
+	if existingCache != nil && existingCache.Tag == rel.TagName && existingCache.Repository == repoName {
+		if cachedDownloads := tryUseCache(rel.Assets, existingCache); cachedDownloads != nil {
+			log.Printf("Using cached downloads for %s (tag: %s) - no asset changes detected", repoName, rel.TagName)
+			return rel.TagName, cachedDownloads, existingCache, nil
+		}
+	}
+
+	// Cache miss or invalid - process assets normally
+	log.Printf("Cache miss for %s (tag: %s) - processing assets", repoName, rel.TagName)
+	qualifyingAssets, err := filterAndProcessAssets(ctx, token, rel.Assets, rel.Draft, rel.Prerelease)
+	if err != nil {
+		return "", nil, nil, err
+	}
+
+	if len(qualifyingAssets) == 0 {
+		return "", nil, nil, fmt.Errorf("no qualifying assets found for release %s", rel.TagName)
+	}
+
+	// Create new cache
+	newCache := &FormulaCache{
+		Tag:        rel.TagName,
+		Repository: repoName,
+		CachedAt:   time.Now(),
+		Assets:     make([]CachedAsset, len(qualifyingAssets)),
+	}
+
+	for i, download := range qualifyingAssets {
+		// Find the corresponding asset to get its ID
+		found := false
+		for _, asset := range rel.Assets {
+			if asset.Name == download.Filename {
+				newCache.Assets[i] = CachedAsset{
+					ID:       asset.ID,
+					Filename: download.Filename,
+					URL:      download.URL,
+					SHA256:   download.SHA256,
+				}
+				found = true
+				break
+			}
+		}
+		if !found {
+			return "", nil, nil, fmt.Errorf("failed to find asset ID for download %q", download.Filename)
+		}
+	}
+
+	return rel.TagName, qualifyingAssets, newCache, nil
+}
+
+// tryUseCache attempts to use cached downloads if all asset IDs match.
+func tryUseCache(currentAssets []releaseAsset, cache *FormulaCache) []Download {
+	// Create a map of current asset IDs to assets
+	currentAssetMap := make(map[int64]releaseAsset)
+	for _, asset := range currentAssets {
+		currentAssetMap[asset.ID] = asset
+	}
+
+	// Check if all cached assets still exist with the same IDs
+	downloads := make([]Download, 0, len(cache.Assets))
+	for _, cachedAsset := range cache.Assets {
+		if currentAsset, exists := currentAssetMap[cachedAsset.ID]; exists {
+			// Asset ID still exists, use cached data
+			download := Download{
+				Filename: currentAsset.Name,
+				URL:      currentAsset.BrowserDownloadURL,
+				SHA256:   cachedAsset.SHA256,
+			}
+
+			// Verify it's still a valid platform/architecture
+			if isValidPlatform(download) && isValidArchitecture(download) {
+				downloads = append(downloads, download)
+			}
+		} else {
+			// Asset ID changed, cache is invalid
+			return nil
+		}
+	}
+
+	return downloads
 }
 
 // filterAndProcessAssets filters release assets and calculates their SHA256 hashes.

@@ -85,17 +85,25 @@ func generateFormulas(ctx context.Context, token string, formulas []cfg.Config) 
 
 // generateSingleFormula generates a single Homebrew formula file.
 func generateSingleFormula(ctx context.Context, token string, config cfg.Config) error {
+	formulaFile := filepath.Join("Formula", fmt.Sprintf("%s.rb", strings.ToLower(config.Name)))
+
+	// Try to parse existing cache
+	existingCache, err := github.ParseCacheFromFormula(formulaFile)
+	if err != nil {
+		log.Printf("Warning: failed to parse cache from %s: %v", formulaFile, err)
+		existingCache = nil
+	}
+
 	log.Printf("Fetching latest download for %q (repo: %q)", config.Name, config.Repository)
 
-	tag, downloads, err := github.GetLatestDownloads(ctx, token, config.Repository)
+	tag, downloads, newCache, err := github.GetLatestDownloadsWithCache(ctx, token, config.Repository, existingCache)
 	if err != nil {
 		return fmt.Errorf("failed to get latest download for %q: %w", config.Name, err)
 	}
 
-	formulaFile := filepath.Join("Formula", fmt.Sprintf("%s.rb", strings.ToLower(config.Name)))
 	log.Printf("Found %d downloads for %q (version: %s); generating formula file: %s", len(downloads), config.Name, tag, formulaFile)
 
-	newFormula, err := template.GenerateFormula(config, tag, downloads)
+	newFormula, err := template.GenerateFormula(config, tag, downloads, newCache)
 	if err != nil {
 		return fmt.Errorf("failed to generate formula: %w", err)
 	}
