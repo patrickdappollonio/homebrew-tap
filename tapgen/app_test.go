@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/patrickdappollonio/homebrew-tap/tapgen/cfg"
+	"github.com/patrickdappollonio/homebrew-tap/tapgen/github"
 )
 
 func TestFilterConfigs(t *testing.T) {
@@ -249,4 +250,157 @@ func TestGetGitHubToken(t *testing.T) {
 			t.Errorf("expected empty string; got %q", result)
 		}
 	})
+}
+
+func TestSortDownloads(t *testing.T) {
+	// Create test downloads with different platforms and architectures
+	downloads := []github.Download{
+		{Filename: "app-linux-arm.tar.gz", URL: "https://example.com/app-linux-arm.tar.gz", SHA256: "hash1"},
+		{Filename: "app-darwin-arm64.tar.gz", URL: "https://example.com/app-darwin-arm64.tar.gz", SHA256: "hash2"},
+		{Filename: "app-linux-amd64.tar.gz", URL: "https://example.com/app-linux-amd64.tar.gz", SHA256: "hash3"},
+		{Filename: "app-darwin-amd64.tar.gz", URL: "https://example.com/app-darwin-amd64.tar.gz", SHA256: "hash4"},
+		{Filename: "app-linux-arm64.tar.gz", URL: "https://example.com/app-linux-arm64.tar.gz", SHA256: "hash5"},
+		{Filename: "app-darwin-x86_64.tar.gz", URL: "https://example.com/app-darwin-x86_64.tar.gz", SHA256: "hash6"},
+	}
+
+	// Sort the downloads
+	sortDownloads(downloads)
+
+	// Expected order:
+	// 1. MacOS ARM64 (darwin-arm64)
+	// 2. MacOS Intel (darwin-amd64, darwin-x86_64) - sorted by filename
+	// 3. Linux Intel (linux-amd64)
+	// 4. Linux ARM64 (linux-arm64)
+	// 5. Linux ARM (linux-arm)
+	expectedOrder := []string{
+		"app-darwin-arm64.tar.gz",  // MacOS ARM64
+		"app-darwin-amd64.tar.gz",  // MacOS Intel
+		"app-darwin-x86_64.tar.gz", // MacOS Intel (sorted by filename)
+		"app-linux-amd64.tar.gz",   // Linux Intel
+		"app-linux-arm64.tar.gz",   // Linux ARM64
+		"app-linux-arm.tar.gz",     // Linux ARM
+	}
+
+	if len(downloads) != len(expectedOrder) {
+		t.Fatalf("Expected %d downloads, got %d", len(expectedOrder), len(downloads))
+	}
+
+	for i, expected := range expectedOrder {
+		if downloads[i].Filename != expected {
+			t.Errorf("Expected download %d to be %s, got %s", i, expected, downloads[i].Filename)
+		}
+	}
+}
+
+func TestGetArchitecturePriority(t *testing.T) {
+	testCases := []struct {
+		filename string
+		expected int
+	}{
+		// Linux priorities: Intel first, then ARM64, then ARM
+		{"app-linux-amd64.tar.gz", 1}, // Linux Intel
+		{"app-linux-arm64.tar.gz", 2}, // Linux ARM64
+		{"app-linux-arm.tar.gz", 3},   // Linux ARM
+
+		// MacOS priorities: ARM64 first, then Intel, then ARM
+		{"app-darwin-arm64.tar.gz", 1},  // MacOS ARM64
+		{"app-darwin-x86_64.tar.gz", 2}, // MacOS Intel
+		{"app-darwin-arm.tar.gz", 3},    // MacOS ARM
+
+		// Unknown architecture
+		{"app-unknown.tar.gz", 4}, // Unknown
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.filename, func(t *testing.T) {
+			download := github.Download{Filename: tc.filename}
+			priority := getArchitecturePriority(download)
+			if priority != tc.expected {
+				t.Errorf("Expected priority %d for %s, got %d", tc.expected, tc.filename, priority)
+			}
+		})
+	}
+}
+
+func TestSortDownloadsDeterministic(t *testing.T) {
+	// Create identical downloads in different orders
+	downloads1 := []github.Download{
+		{Filename: "z-linux-amd64.tar.gz", URL: "https://example.com/z", SHA256: "hash1"},
+		{Filename: "a-linux-amd64.tar.gz", URL: "https://example.com/a", SHA256: "hash2"},
+		{Filename: "m-linux-amd64.tar.gz", URL: "https://example.com/m", SHA256: "hash3"},
+	}
+
+	downloads2 := []github.Download{
+		{Filename: "m-linux-amd64.tar.gz", URL: "https://example.com/m", SHA256: "hash3"},
+		{Filename: "a-linux-amd64.tar.gz", URL: "https://example.com/a", SHA256: "hash2"},
+		{Filename: "z-linux-amd64.tar.gz", URL: "https://example.com/z", SHA256: "hash1"},
+	}
+
+	// Sort both slices
+	sortDownloads(downloads1)
+	sortDownloads(downloads2)
+
+	// They should be identical after sorting
+	if len(downloads1) != len(downloads2) {
+		t.Fatalf("Downloads have different lengths: %d vs %d", len(downloads1), len(downloads2))
+	}
+
+	for i := range downloads1 {
+		if downloads1[i].Filename != downloads2[i].Filename {
+			t.Errorf("Downloads differ at position %d: %s vs %s", i, downloads1[i].Filename, downloads2[i].Filename)
+		}
+	}
+
+	// Expected alphabetical order
+	expected := []string{
+		"a-linux-amd64.tar.gz",
+		"m-linux-amd64.tar.gz",
+		"z-linux-amd64.tar.gz",
+	}
+
+	for i, expectedFilename := range expected {
+		if downloads1[i].Filename != expectedFilename {
+			t.Errorf("Expected %s at position %d, got %s", expectedFilename, i, downloads1[i].Filename)
+		}
+	}
+}
+
+func TestSortDownloadsSpecificOrder(t *testing.T) {
+	// Create test downloads with mixed platforms and architectures
+	downloads := []github.Download{
+		{Filename: "app-linux-arm64.tar.gz", URL: "https://example.com/app-linux-arm64.tar.gz", SHA256: "hash1"},
+		{Filename: "app-darwin-amd64.tar.gz", URL: "https://example.com/app-darwin-amd64.tar.gz", SHA256: "hash2"},
+		{Filename: "app-linux-amd64.tar.gz", URL: "https://example.com/app-linux-amd64.tar.gz", SHA256: "hash3"},
+		{Filename: "app-darwin-arm64.tar.gz", URL: "https://example.com/app-darwin-arm64.tar.gz", SHA256: "hash4"},
+		{Filename: "app-linux-arm.tar.gz", URL: "https://example.com/app-linux-arm.tar.gz", SHA256: "hash5"},
+		{Filename: "app-darwin-arm.tar.gz", URL: "https://example.com/app-darwin-arm.tar.gz", SHA256: "hash6"},
+	}
+
+	// Sort the downloads
+	sortDownloads(downloads)
+
+	// Expected order based on requirements:
+	// 1. Mac apps first
+	// 2. ARM64 mac app first (within Mac apps)
+	// 3. Then Linux apps after all Mac apps
+	// 4. Linux AMD64 first (within Linux apps)
+	// 5. Then the remaining linux apps
+	expectedOrder := []string{
+		"app-darwin-arm64.tar.gz", // Mac ARM64 first
+		"app-darwin-amd64.tar.gz", // Mac AMD64 second
+		"app-darwin-arm.tar.gz",   // Mac ARM third
+		"app-linux-amd64.tar.gz",  // Linux AMD64 first
+		"app-linux-arm64.tar.gz",  // Linux ARM64 second
+		"app-linux-arm.tar.gz",    // Linux ARM third
+	}
+
+	if len(downloads) != len(expectedOrder) {
+		t.Fatalf("Expected %d downloads, got %d", len(expectedOrder), len(downloads))
+	}
+
+	for i, expected := range expectedOrder {
+		if downloads[i].Filename != expected {
+			t.Errorf("Expected download %d to be %s, got %s", i, expected, downloads[i].Filename)
+		}
+	}
 }

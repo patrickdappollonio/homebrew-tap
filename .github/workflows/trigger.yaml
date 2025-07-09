@@ -8,6 +8,11 @@ on:
       target:
         description: "The target repository to update"
         required: false
+      cleanup_orphaned:
+        description: "Remove formula files that no longer correspond to apps in the config"
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -40,8 +45,8 @@ jobs:
 
       - name: Run application to generate Formulas
         run: |
-          rm -rf Formula/*.rb README.md
-          homebrew-tap --target "${{ github.event.inputs.target }}"
+          rm -f README.md
+          homebrew-tap --target "${{ github.event.inputs.target }}" ${{ github.event.inputs.cleanup_orphaned == 'true' && '--cleanup-orphaned' || '' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

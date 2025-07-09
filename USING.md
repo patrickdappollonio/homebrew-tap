@@ -12,10 +12,17 @@ The application automatically detects the latest, non-draft, published version o
 
 - **Automatic Release Detection**: Fetches the latest non-draft, published releases from GitHub
 - **Multi-Platform Support**: Generates formulas for macOS (Intel/ARM64) and Linux (Intel/ARM64/ARM)
-- **Intelligent Caching**: Uses asset ID-based caching to avoid unnecessary downloads
-- **Custom README Templates**: Allows users to provide their own README template
+- **Intelligent Caching**: Uses asset ID-based caching to avoid unnecessary downloads when GitHub release assets haven't changed
+- **Deterministic Output**: Ensures consistent formula generation with platform-specific architecture priorities:
+  - **macOS**: ARM64 first, then Intel, then ARM
+  - **Linux**: Intel first, then ARM64, then ARM
+- **Smart File Writing**: Only writes formula files when content has actually changed, preserving timestamps
+- **Architecture Deduplication**: Automatically removes duplicate downloads for the same architecture, preferring LIBC over MUSL builds
+- **Custom README Templates**: Allows users to provide their own README template with rich templating functions
+- **SPDX License Validation**: Validates license fields against the official SPDX license list
+- **Orphaned Formula Cleanup**: Optionally removes formula files that no longer correspond to apps in the config
 - **Enhanced Error Handling**: Provides detailed error messages with HTTP status codes and response bodies
-- **Flexible Configuration**: Supports aliases, binary renaming, license detection, and more
+- **Flexible Configuration**: Supports aliases, binary renaming, conflicts, caveats, and more
 
 ## Command-Line Usage
 
@@ -48,10 +55,51 @@ go build -o homebrew-tap .
 - `--config`, `-c`: Location of the configuration file (default: `config.yaml`)
 - `--target`, `-t`: Only generate the formula for the specified package
 - `--readme-template`, `-r`: Path to the README template file (default: `readme.md.gotmpl`)
+- `--cleanup-orphaned`: Remove formula files that no longer correspond to apps in the config (default: `false`)
 
 ### Environment Variables
 
 - `GITHUB_TOKEN`: GitHub personal access token for API requests (recommended for higher rate limits)
+
+### Caching Mechanism
+
+The tool uses an intelligent caching system to improve performance:
+
+- **Asset ID-Based Caching**: Caches GitHub release asset information using asset IDs rather than filenames
+- **Cache Storage**: Cache data is embedded as JSON comments in the generated formula files
+- **Cache Validation**: Automatically detects when GitHub release assets have changed and invalidates cache
+- **Performance Benefits**: Avoids re-downloading and re-calculating SHA256 hashes for unchanged assets
+- **Transparency**: Cache information is visible in the generated formula files for debugging
+
+Example cache comment in a formula file:
+```ruby
+# TAPGEN_CACHE: {"tag":"v1.0.0","repository":"user/repo","cached_at":"2024-01-01T00:00:00Z","assets":[...]}
+```
+
+### Architecture Prioritization
+
+The tool generates formulas with deterministic, platform-optimized architecture ordering:
+
+#### Download Sorting Order:
+1. **macOS downloads** (processed first)
+   - ARM64 architectures first
+   - Intel architectures second
+2. **Linux downloads** (processed after macOS)
+   - Intel architectures first
+   - ARM64 architectures second
+   - General ARM architectures last
+
+#### Architecture Detection:
+- **Intel**: Detects `amd64`, `x86_64`, `86_64` patterns
+- **ARM64**: Detects `arm64` patterns
+- **ARM**: Detects `arm` patterns (non-64bit)
+
+#### Deduplication:
+- Automatically removes duplicate downloads for the same architecture
+- Prefers LIBC builds over MUSL builds when both are available
+- Ensures each architecture has only one download entry in the formula
+
+This ensures consistent, predictable formula generation and eliminates random ordering changes in generated files.
 
 ## Custom README Templates
 
@@ -75,10 +123,11 @@ The following functions are available in your template:
 - `quote`: Wrap string in double quotes
 - `printf`: Format strings (like `fmt.Sprintf`)
 - `trimPrefix`, `trimSuffix`: String trimming
-- `classify`: Convert to PascalCase
-- `now`: Current timestamp
-- `indent`, `nindent`: Text indentation
-- `stringsJoin`: Join string arrays
+- `lowerAlphaNum`: Normalize string to lowercase alphanumeric characters only
+- `classify`: Convert to PascalCase (used for Ruby class names)
+- `now`: Current timestamp in RFC850 format
+- `indent`, `nindent`: Text indentation helpers
+- `stringsJoin`: Join string arrays with separator
 
 ### Example Template
 
@@ -128,18 +177,32 @@ A configuration is defined as a list of repositories with the following settings
 
 ### Configuration Options
 
-| Field             | Type   | Required | Description                                  |
-| ----------------- | ------ | -------- | -------------------------------------------- |
-| `name`            | string | ✅        | Binary name and formula identifier           |
-| `repository`      | string | ✅        | GitHub repository in `owner/repo` format     |
-| `description`     | string | ✅        | Short description of the application         |
-| `url`             | string | ❌        | Homepage URL (defaults to GitHub repository) |
-| `test_command`    | string | ❌        | Command to test the installation             |
-| `license`         | string | ❌        | SPDX license identifier                      |
-| `install_aliases` | array  | ❌        | List of additional command aliases           |
-| `rename_binary`   | string | ❌        | Rename the binary upon installation          |
-| `conflicts_with`  | array  | ❌        | List of conflicting Homebrew formulae        |
-| `caveats`         | string | ❌        | Additional installation notes                |
+| Field             | Type   | Required | Description                                                    |
+| ----------------- | ------ | -------- | -------------------------------------------------------------- |
+| `name`            | string | ✅        | Binary name and formula identifier                             |
+| `repository`      | string | ✅        | GitHub repository in `owner/repo` format                       |
+| `description`     | string | ✅        | Short description of the application                           |
+| `url`             | string | ❌        | Homepage URL (defaults to GitHub repository)                   |
+| `test_command`    | string | ❌        | Command to test the installation                               |
+| `license`         | string | ❌        | SPDX license identifier (validated against official SPDX list) |
+| `install_aliases` | array  | ❌        | List of additional command aliases                             |
+| `rename_binary`   | string | ❌        | Rename the binary upon installation                            |
+| `conflicts_with`  | array  | ❌        | List of conflicting Homebrew formulae                          |
+| `caveats`         | string | ❌        | Additional installation notes                                  |
+
+### License Validation
+
+The tool validates license fields against the official SPDX license list to ensure compatibility with Homebrew requirements:
+
+- **Automatic Validation**: All license fields are checked during config parsing
+- **SPDX Compliance**: Uses the official SPDX license identifiers (version 3.26.0 as of 2024-12-30)
+- **Error Prevention**: Invalid licenses cause the tool to exit with a helpful error message
+- **Common Licenses**: Supports popular licenses like `MIT`, `Apache-2.0`, `BSD-3-Clause`, `GPL-3.0-only`, etc.
+
+Example error for invalid license:
+```
+failed to validate license for "my-app": license "InvalidLicense" is not a valid SPDX license, see list at: https://spdx.org/licenses/
+```
 
 ## GitHub Actions Integration
 
@@ -148,22 +211,56 @@ The repository uses GitHub Actions to automatically update formulas. The workflo
 1. Runs daily at midnight
 2. Can be triggered manually with `workflow_dispatch`
 3. Downloads the latest binary release
-4. Generates formulas for all configured repositories
-5. Updates the README using the template
-6. Commits and pushes changes
+4. Generates formulas for all configured repositories (only updating changed files)
+5. Automatically removes formula files for apps no longer in the configuration
+6. Updates the README using the template
+7. Commits and pushes changes
+
+The application uses intelligent caching and file comparison to only update files when necessary, making the process efficient and preserving manual changes when possible.
 
 ### Workflow Configuration
+
+The GitHub Actions workflow supports the following inputs:
+
+- `target`: (Optional) The specific repository to update instead of processing all configurations
+- `cleanup_orphaned`: (Optional) Whether to remove formula files that no longer correspond to apps in the config (default: `false`)
+
+### Orphaned Formula Cleanup
+
+The `--cleanup-orphaned` flag enables automatic cleanup of formula files that no longer correspond to applications in your configuration:
+
+- **Safe by Default**: Disabled by default to prevent accidental deletion
+- **Selective Cleanup**: Only removes `.rb` files from the `Formula/` directory
+- **Config-Based**: Compares existing formula files against the `name` field in your config
+- **Logging**: Provides clear logs about which files are being removed
+
+This feature is useful when you remove applications from your config and want to automatically clean up the corresponding formula files.
 
 ```yaml
 - name: Run application to generate Formulas
   run: |
-    rm -rf Formula/*.rb README.md
-    homebrew-tap --target "${{ github.event.inputs.target }}"
+    rm -f README.md
+    homebrew-tap --target "${{ github.event.inputs.target }}" ${{ github.event.inputs.cleanup_orphaned == 'true' && '--cleanup-orphaned' || '' }}
   env:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-*Note: The workflow can now omit the `--readme-template` flag since it defaults to `readme.md.gotmpl`.*
+*Note: The workflow only removes README.md and lets the application handle formula file management intelligently. When `cleanup_orphaned` is enabled, it will remove formula files for apps no longer in the configuration, but this is disabled by default to prevent accidental deletion.*
+
+### Smart File Management
+
+The tool implements intelligent file management to minimize unnecessary changes:
+
+- **Content Comparison**: Only writes formula files when content has actually changed
+- **Timestamp Preservation**: Unchanged files maintain their original modification times
+- **Minimal Git Changes**: Reduces noise in git history by avoiding unnecessary commits
+- **Performance**: Faster execution when most formulas are already up to date
+
+Example log output:
+```
+Formula file "Formula/my-app.rb" is up to date, skipping...
+Formula file "Formula/other-app.rb" generated successfully
+```
 
 ## Error Handling
 

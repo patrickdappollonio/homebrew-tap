@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/patrickdappollonio/homebrew-tap/tapgen/cfg"
@@ -17,6 +18,7 @@ import (
 // Run executes the tapgen command-line application.
 func Run() error {
 	var configLocation, targetPackage, readmeTemplate string
+	var cleanupOrphaned bool
 
 	cmd := &cobra.Command{
 		Use:           os.Args[0],
@@ -24,19 +26,20 @@ func Run() error {
 		SilenceErrors: true,
 		Short:         "Generate Homebrew formulas for GitHub releases based off a config file.",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return execute(configLocation, targetPackage, readmeTemplate)
+			return execute(configLocation, targetPackage, readmeTemplate, cleanupOrphaned)
 		},
 	}
 
 	cmd.Flags().StringVarP(&configLocation, "config", "c", "config.yaml", "Location of the configuration file to use")
 	cmd.Flags().StringVarP(&targetPackage, "target", "t", "", "Only generate the formula for the specified package target as specified in the config file's \"name\" field")
 	cmd.Flags().StringVarP(&readmeTemplate, "readme-template", "r", "readme.md.gotmpl", "Path to the README template file")
+	cmd.Flags().BoolVar(&cleanupOrphaned, "cleanup-orphaned", false, "Remove formula files that no longer correspond to apps in the config")
 
 	return cmd.Execute()
 }
 
 // execute runs the main application logic.
-func execute(configLocation, targetPackage, readmeTemplate string) error {
+func execute(configLocation, targetPackage, readmeTemplate string, cleanupOrphaned bool) error {
 	configs, err := cfg.ParseConfig(configLocation)
 	if err != nil {
 		return fmt.Errorf("failed to parse config: %w", err)
@@ -54,6 +57,13 @@ func execute(configLocation, targetPackage, readmeTemplate string) error {
 
 	if err := generateFormulas(ctx, token, formulas); err != nil {
 		return err
+	}
+
+	// Clean up any orphaned formula files only if requested
+	if cleanupOrphaned {
+		if err := cleanupOrphanedFormulas(configs); err != nil {
+			log.Printf("Warning: failed to cleanup orphaned formulas: %v", err)
+		}
 	}
 
 	return generateReadme(configs, readmeTemplate)
@@ -84,6 +94,70 @@ func generateFormulas(ctx context.Context, token string, formulas []cfg.Config) 
 	return nil
 }
 
+// sortDownloads sorts downloads to ensure deterministic output in the generated formula files.
+// Downloads are sorted by:
+// 1. Platform (MacOS first, then Linux)
+// 2. Architecture (platform-specific priorities):
+//   - MacOS: ARM64 first, then Intel, then ARM
+//   - Linux: Intel first, then ARM64, then ARM
+//
+// 3. Filename (alphabetically for deterministic ordering)
+func sortDownloads(downloads []github.Download) {
+	sort.Slice(downloads, func(i, j int) bool {
+		a, b := downloads[i], downloads[j]
+
+		// First, sort by platform (MacOS first, then Linux)
+		if a.IsMacOS() && !b.IsMacOS() {
+			return true
+		}
+		if !a.IsMacOS() && b.IsMacOS() {
+			return false
+		}
+
+		// Within the same platform, sort by architecture with platform-specific priorities
+		aArch := getArchitecturePriority(a)
+		bArch := getArchitecturePriority(b)
+		if aArch != bArch {
+			return aArch < bArch
+		}
+
+		// Finally, sort by filename for deterministic ordering
+		return a.Filename < b.Filename
+	})
+}
+
+// getArchitecturePriority returns a numeric priority for architecture sorting.
+// Lower numbers have higher priority.
+// MacOS: ARM64 first, then Intel, then ARM
+// Linux: Intel first, then ARM64, then ARM
+func getArchitecturePriority(download github.Download) int {
+	if download.IsMacOS() {
+		// MacOS architecture priorities: ARM64 first
+		if download.IsARM64() {
+			return 1
+		}
+		if download.IsIntel() {
+			return 2
+		}
+		if download.IsARM() {
+			return 3
+		}
+		return 4 // Unknown architecture
+	} else {
+		// Linux architecture priorities: Intel first
+		if download.IsIntel() {
+			return 1
+		}
+		if download.IsARM64() {
+			return 2
+		}
+		if download.IsARM() {
+			return 3
+		}
+		return 4 // Unknown architecture
+	}
+}
+
 // generateSingleFormula generates a single Homebrew formula file.
 func generateSingleFormula(ctx context.Context, token string, config cfg.Config) error {
 	formulaFile := filepath.Join("Formula", fmt.Sprintf("%s.rb", strings.ToLower(config.Name)))
@@ -103,6 +177,9 @@ func generateSingleFormula(ctx context.Context, token string, config cfg.Config)
 	}
 
 	log.Printf("Found %d downloads for %q (version: %s); generating formula file: %s", len(downloads), config.Name, tag, formulaFile)
+
+	// Sort downloads to ensure deterministic output
+	sortDownloads(downloads)
 
 	newFormula, err := template.GenerateFormula(config, tag, downloads, newCache)
 	if err != nil {
@@ -164,4 +241,41 @@ func generateReadme(configs []cfg.Config, templatePath string) error {
 // getGitHubToken retrieves the GitHub token from environment variables.
 func getGitHubToken() string {
 	return strings.TrimSpace(os.Getenv("GITHUB_TOKEN"))
+}
+
+// cleanupOrphanedFormulas removes formula files that no longer correspond to apps in the config.
+func cleanupOrphanedFormulas(configs []cfg.Config) error {
+	// Create a set of expected formula files
+	expectedFiles := make(map[string]bool)
+	for _, config := range configs {
+		formulaFile := fmt.Sprintf("%s.rb", strings.ToLower(config.Name))
+		expectedFiles[formulaFile] = true
+	}
+
+	// Read the Formula directory
+	entries, err := os.ReadDir("Formula")
+	if err != nil {
+		if os.IsNotExist(err) {
+			// Formula directory doesn't exist, nothing to clean up
+			return nil
+		}
+		return fmt.Errorf("failed to read Formula directory: %w", err)
+	}
+
+	// Check each .rb file
+	for _, entry := range entries {
+		if entry.IsDir() || !strings.HasSuffix(entry.Name(), ".rb") {
+			continue
+		}
+
+		if !expectedFiles[entry.Name()] {
+			formulaPath := filepath.Join("Formula", entry.Name())
+			log.Printf("Removing orphaned formula file: %s", formulaPath)
+			if err := os.Remove(formulaPath); err != nil {
+				return fmt.Errorf("failed to remove orphaned formula %q: %w", formulaPath, err)
+			}
+		}
+	}
+
+	return nil
 }
