@@ -7,15 +7,15 @@ class HelmListCharts < Formula
   # MacOS builds
   #
   on_macos do
-    # MacOS Intel builds
-    if Hardware::CPU.intel?
-      sha256 "70495e3b0ff663ca7db2edec6ee3536ae587e42d3d3e74c0376ee4dfd28c1885"
-      url "https://github.com/patrickdappollonio/helm-list-charts/releases/download/v1.0.1/helm-list-charts-v1.0.1-darwin-x86_64.tar.gz"
-    end
     # MacOS ARM64 builds
     if Hardware::CPU.arm?
       sha256 "0c5f2bbd346b89dd416eaaa616853e7f485cdcf284cab1aa99f075ae79e3fee7"
       url "https://github.com/patrickdappollonio/helm-list-charts/releases/download/v1.0.1/helm-list-charts-v1.0.1-darwin-arm64.tar.gz"
+    end
+    # MacOS Intel builds
+    if Hardware::CPU.intel?
+      sha256 "70495e3b0ff663ca7db2edec6ee3536ae587e42d3d3e74c0376ee4dfd28c1885"
+      url "https://github.com/patrickdappollonio/helm-list-charts/releases/download/v1.0.1/helm-list-charts-v1.0.1-darwin-x86_64.tar.gz"
     end
   end
   #

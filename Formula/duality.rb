@@ -6,15 +6,15 @@ class Duality < Formula
   # MacOS builds
   #
   on_macos do
-    # MacOS Intel builds
-    if Hardware::CPU.intel?
-      sha256 "c0874d99371e2faa5f1446ab90fdb586699d18b2df5edb3a5e6373b520aee671"
-      url "https://github.com/patrickdappollonio/duality/releases/download/v1.0.0/duality_darwin_x86_64.tar.gz"
-    end
     # MacOS ARM64 builds
     if Hardware::CPU.arm?
       sha256 "37c4e0244bfd259929044ad880d7497dadc8cf3c304c94eed37b031d234effbc"
       url "https://github.com/patrickdappollonio/duality/releases/download/v1.0.0/duality_darwin_arm64.tar.gz"
+    end
+    # MacOS Intel builds
+    if Hardware::CPU.intel?
+      sha256 "c0874d99371e2faa5f1446ab90fdb586699d18b2df5edb3a5e6373b520aee671"
+      url "https://github.com/patrickdappollonio/duality/releases/download/v1.0.0/duality_darwin_x86_64.tar.gz"
     end
   end
   #

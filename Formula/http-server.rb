@@ -7,15 +7,15 @@ class HttpServer < Formula
   # MacOS builds
   #
   on_macos do
-    # MacOS Intel builds
-    if Hardware::CPU.intel?
-      sha256 "05a6567a58df8cf1a8c2cab8a7ff702c52508c20b847e7bdc8ea98f7b7eab679"
-      url "https://github.com/patrickdappollonio/http-server/releases/download/v2.9.0/http-server_darwin_x86_64.tar.gz"
-    end
     # MacOS ARM64 builds
     if Hardware::CPU.arm?
       sha256 "d55f521271114b3f6ce379f2a5890fda6fb687340202c2e171bed2bdfed215a1"
       url "https://github.com/patrickdappollonio/http-server/releases/download/v2.9.0/http-server_darwin_arm64.tar.gz"
+    end
+    # MacOS Intel builds
+    if Hardware::CPU.intel?
+      sha256 "05a6567a58df8cf1a8c2cab8a7ff702c52508c20b847e7bdc8ea98f7b7eab679"
+      url "https://github.com/patrickdappollonio/http-server/releases/download/v2.9.0/http-server_darwin_x86_64.tar.gz"
     end
   end
   #

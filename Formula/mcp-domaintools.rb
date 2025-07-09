@@ -22,11 +22,6 @@ class McpDomaintools < Formula
   # Linux builds
   #
   on_linux do
-    # Linux ARM (non-64) builds
-    if Hardware::CPU.arm? && !Hardware::CPU.is_64_bit?
-      sha256 "ced4d29ef42f76e433a995a866ac2882053f46c7677da43f2e0c4e963125d181"
-      url "https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.2.0/mcp-domaintools_linux_arm.tar.gz"
-    end
     # Linux Intel 64bit builds
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
       sha256 "01b1e47f4783f1e816d9be255023a9580a8e797708edba8edf316df9f89d0544"
@@ -36,6 +31,11 @@ class McpDomaintools < Formula
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
       sha256 "337412ca627277e2ee13b114b34229d3d97ecb8ff792bad38dfcf1f420218908"
       url "https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.2.0/mcp-domaintools_linux_arm64.tar.gz"
+    end
+    # Linux ARM (non-64) builds
+    if Hardware::CPU.arm? && !Hardware::CPU.is_64_bit?
+      sha256 "ced4d29ef42f76e433a995a866ac2882053f46c7677da43f2e0c4e963125d181"
+      url "https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.2.0/mcp-domaintools_linux_arm.tar.gz"
     end
   end
 
