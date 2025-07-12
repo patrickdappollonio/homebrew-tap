@@ -60,3 +60,7 @@
   repository: patrickdappollonio/context-generator
   description: "A fast, efficient command-line tool written in Rust that generates copy-pastable context from your source code, perfect for providing to AI assistants like ChatGPT, Claude, or Copilot."
   license: MIT
+- name: mcp-kubernetes-ro
+  repository: patrickdappollonio/mcp-kubernetes-ro
+  description: "An MCP server providing read-only access to Kubernetes clusters for AI assistants."
+  license: MIT
