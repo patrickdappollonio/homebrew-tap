@@ -25,6 +25,7 @@ The list of available applications is:
 * [`wiump`](#wiump)
 * [`mcp-domaintools`](#mcp-domaintools)
 * [`context-generator`](#context-generator)
+* [`mcp-kubernetes-ro`](#mcp-kubernetes-ro)
 
 ## Applications
 
@@ -235,4 +236,19 @@ brew install patrickdappollonio/tap/mcp-domaintools
 
 ```bash
 brew install patrickdappollonio/tap/context-generator
+```
+
+### `mcp-kubernetes-ro`
+
+<dl>
+  <dt><strong>Description:</strong></dt>
+  <dd>An MCP server providing read-only access to Kubernetes clusters for AI assistants.</dd>
+  <dt><strong>License:</strong></dt>
+  <dd>MIT</dd>
+  <dt><strong>Repository:</strong></dt>
+  <dd><a href="https://github.com/patrickdappollonio/mcp-kubernetes-ro"><code>patrickdappollonio/mcp-kubernetes-ro</code></a></dd>
+</dl>
+
+```bash
+brew install patrickdappollonio/tap/mcp-kubernetes-ro
 ```
