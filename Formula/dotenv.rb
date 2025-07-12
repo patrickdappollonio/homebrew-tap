@@ -1,7 +1,7 @@
 class Dotenv < Formula
   desc "An app to call other apps using customized environment variables."
   homepage "https://github.com/patrickdappollonio/dotenv"
-  version "2.0.3"
+  version "2.1.0"
   license "MIT"
   #
   # MacOS builds
@@ -9,13 +9,13 @@ class Dotenv < Formula
   on_macos do
     # MacOS ARM64 builds
     if Hardware::CPU.arm?
-      sha256 "44c08d992bbfddfc59653676c40c043986f682b5a08d3f8877c9de6cac3177a2"
-      url "https://github.com/patrickdappollonio/dotenv/releases/download/v2.0.3/dotenv-v2.0.3-darwin-arm64.tar.gz"
+      sha256 "32d427978494337f518dba37c5932746fe812154db80f4593cd2ca08b7933812"
+      url "https://github.com/patrickdappollonio/dotenv/releases/download/v2.1.0/dotenv-v2.1.0-darwin-arm64.tar.gz"
     end
     # MacOS Intel builds
     if Hardware::CPU.intel?
-      sha256 "d9a955021dfaf0904b0a2ce498aa19b124fd1018ea18a68373aa874c17cdcdd5"
-      url "https://github.com/patrickdappollonio/dotenv/releases/download/v2.0.3/dotenv-v2.0.3-darwin-x86_64.tar.gz"
+      sha256 "d6e5b932fc7655ebe5f9f190039c8f6afe0aa0ce4cf9153b1d5c2fb3e301889d"
+      url "https://github.com/patrickdappollonio/dotenv/releases/download/v2.1.0/dotenv-v2.1.0-darwin-x86_64.tar.gz"
     end
   end
   #
@@ -24,13 +24,13 @@ class Dotenv < Formula
   on_linux do
     # Linux Intel 64bit builds
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
-      sha256 "f32812c2bbbb71e5f4c65896bbd7a88947a5ff356ae4cad96f0daf7dcf71acc5"
-      url "https://github.com/patrickdappollonio/dotenv/releases/download/v2.0.3/dotenv-v2.0.3-linux-x86_64.tar.gz"
+      sha256 "d11eb16b6f30cad2da4c1b17c35f338f41c8b3fa389f4e2645e5c1ddc91896f0"
+      url "https://github.com/patrickdappollonio/dotenv/releases/download/v2.1.0/dotenv-v2.1.0-linux-x86_64.tar.gz"
     end
     # Linux ARM64 builds
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      sha256 "4e1cb2576129232f04b09252c51151dd877d461c095eb9d31e80f0b60660e959"
-      url "https://github.com/patrickdappollonio/dotenv/releases/download/v2.0.3/dotenv-v2.0.3-linux-arm64.tar.gz"
+      sha256 "76e4995a795bdfddb29e6cbc47f614fce18e9e69cf38e9e0db645845e0149ed9"
+      url "https://github.com/patrickdappollonio/dotenv/releases/download/v2.1.0/dotenv-v2.1.0-linux-arm64.tar.gz"
     end
   end
 
@@ -43,4 +43,4 @@ end
 # GitHub release assets when they haven't changed. This improves
 # performance and reduces load on GitHub servers.
 # ------------------------------------------------------------------
-# TAPGEN_CACHE: {"tag":"v2.0.3","repository":"patrickdappollonio/dotenv","cached_at":"2025-07-09T00:26:04.081599294-04:00","assets":[{"id":214063708,"filename":"dotenv-v2.0.3-darwin-arm64.tar.gz","url":"https://github.com/patrickdappollonio/dotenv/releases/download/v2.0.3/dotenv-v2.0.3-darwin-arm64.tar.gz","sha256":"44c08d992bbfddfc59653676c40c043986f682b5a08d3f8877c9de6cac3177a2"},{"id":214063723,"filename":"dotenv-v2.0.3-darwin-x86_64.tar.gz","url":"https://github.com/patrickdappollonio/dotenv/releases/download/v2.0.3/dotenv-v2.0.3-darwin-x86_64.tar.gz","sha256":"d9a955021dfaf0904b0a2ce498aa19b124fd1018ea18a68373aa874c17cdcdd5"},{"id":214064072,"filename":"dotenv-v2.0.3-linux-arm64.tar.gz","url":"https://github.com/patrickdappollonio/dotenv/releases/download/v2.0.3/dotenv-v2.0.3-linux-arm64.tar.gz","sha256":"4e1cb2576129232f04b09252c51151dd877d461c095eb9d31e80f0b60660e959"},{"id":214064044,"filename":"dotenv-v2.0.3-linux-x86_64.tar.gz","url":"https://github.com/patrickdappollonio/dotenv/releases/download/v2.0.3/dotenv-v2.0.3-linux-x86_64.tar.gz","sha256":"f32812c2bbbb71e5f4c65896bbd7a88947a5ff356ae4cad96f0daf7dcf71acc5"}]}
+# TAPGEN_CACHE: {"tag":"v2.1.0","repository":"patrickdappollonio/dotenv","cached_at":"2025-07-11T21:32:23.332898006-04:00","assets":[{"id":272160823,"filename":"dotenv-v2.1.0-darwin-arm64.tar.gz","url":"https://github.com/patrickdappollonio/dotenv/releases/download/v2.1.0/dotenv-v2.1.0-darwin-arm64.tar.gz","sha256":"32d427978494337f518dba37c5932746fe812154db80f4593cd2ca08b7933812"},{"id":272160872,"filename":"dotenv-v2.1.0-darwin-x86_64.tar.gz","url":"https://github.com/patrickdappollonio/dotenv/releases/download/v2.1.0/dotenv-v2.1.0-darwin-x86_64.tar.gz","sha256":"d6e5b932fc7655ebe5f9f190039c8f6afe0aa0ce4cf9153b1d5c2fb3e301889d"},{"id":272160977,"filename":"dotenv-v2.1.0-linux-arm64.tar.gz","url":"https://github.com/patrickdappollonio/dotenv/releases/download/v2.1.0/dotenv-v2.1.0-linux-arm64.tar.gz","sha256":"76e4995a795bdfddb29e6cbc47f614fce18e9e69cf38e9e0db645845e0149ed9"},{"id":272161029,"filename":"dotenv-v2.1.0-linux-x86_64.tar.gz","url":"https://github.com/patrickdappollonio/dotenv/releases/download/v2.1.0/dotenv-v2.1.0-linux-x86_64.tar.gz","sha256":"d11eb16b6f30cad2da4c1b17c35f338f41c8b3fa389f4e2645e5c1ddc91896f0"}]}
