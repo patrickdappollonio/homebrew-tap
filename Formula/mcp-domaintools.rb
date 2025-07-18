@@ -1,7 +1,7 @@
 class McpDomaintools < Formula
   desc "An MCP server via STDIO to query DNS and WHOIS information."
   homepage "https://github.com/patrickdappollonio/mcp-domaintools"
-  version "1.2.0"
+  version "1.3.0"
   license "MIT"
   #
   # MacOS builds
@@ -9,13 +9,13 @@ class McpDomaintools < Formula
   on_macos do
     # MacOS ARM64 builds
     if Hardware::CPU.arm?
-      sha256 "9e40252237a3aa4a1c2bdaa16b265e0f871e8565f1da6ce3a7ef85df40b80580"
-      url "https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.2.0/mcp-domaintools_darwin_arm64.tar.gz"
+      sha256 "1eef86c32ea3812340bbf06ecfe9a36b480fe9c4fdef89c790bd28cf89a3cb2e"
+      url "https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.3.0/mcp-domaintools_darwin_arm64.tar.gz"
     end
     # MacOS Intel builds
     if Hardware::CPU.intel?
-      sha256 "d4a344e8b9cb75ebc6add09dff862a58b0a2260b74f03857521344cc01ac8b6b"
-      url "https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.2.0/mcp-domaintools_darwin_x86_64.tar.gz"
+      sha256 "0b58818edcf6aec1fb35671642cb8cb04327df503d0adbbba0cf6526d03930b0"
+      url "https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.3.0/mcp-domaintools_darwin_x86_64.tar.gz"
     end
   end
   #
@@ -24,18 +24,18 @@ class McpDomaintools < Formula
   on_linux do
     # Linux Intel 64bit builds
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
-      sha256 "01b1e47f4783f1e816d9be255023a9580a8e797708edba8edf316df9f89d0544"
-      url "https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.2.0/mcp-domaintools_linux_x86_64.tar.gz"
+      sha256 "576590b6a9fac7234232b2a873fc670c364246a97eada04b0ada9645510fcc0e"
+      url "https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.3.0/mcp-domaintools_linux_x86_64.tar.gz"
     end
     # Linux ARM64 builds
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      sha256 "337412ca627277e2ee13b114b34229d3d97ecb8ff792bad38dfcf1f420218908"
-      url "https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.2.0/mcp-domaintools_linux_arm64.tar.gz"
+      sha256 "60353f145e02e2d428021b4999ef57df0500bb228e61d70d0c6d1d3700bdb35b"
+      url "https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.3.0/mcp-domaintools_linux_arm64.tar.gz"
     end
     # Linux ARM (non-64) builds
     if Hardware::CPU.arm? && !Hardware::CPU.is_64_bit?
-      sha256 "ced4d29ef42f76e433a995a866ac2882053f46c7677da43f2e0c4e963125d181"
-      url "https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.2.0/mcp-domaintools_linux_arm.tar.gz"
+      sha256 "a07f5e84d882d835cf19a19bac7a969a8efdd3772c4eaf72cfa310813cef771f"
+      url "https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.3.0/mcp-domaintools_linux_arm.tar.gz"
     end
   end
 
@@ -48,4 +48,4 @@ end
 # GitHub release assets when they haven't changed. This improves
 # performance and reduces load on GitHub servers.
 # ------------------------------------------------------------------
-# TAPGEN_CACHE: {"tag":"v1.2.0","repository":"patrickdappollonio/mcp-domaintools","cached_at":"2025-07-09T00:26:12.77281716-04:00","assets":[{"id":270467943,"filename":"mcp-domaintools_darwin_arm64.tar.gz","url":"https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.2.0/mcp-domaintools_darwin_arm64.tar.gz","sha256":"9e40252237a3aa4a1c2bdaa16b265e0f871e8565f1da6ce3a7ef85df40b80580"},{"id":270467963,"filename":"mcp-domaintools_darwin_x86_64.tar.gz","url":"https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.2.0/mcp-domaintools_darwin_x86_64.tar.gz","sha256":"d4a344e8b9cb75ebc6add09dff862a58b0a2260b74f03857521344cc01ac8b6b"},{"id":270467945,"filename":"mcp-domaintools_linux_arm.tar.gz","url":"https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.2.0/mcp-domaintools_linux_arm.tar.gz","sha256":"ced4d29ef42f76e433a995a866ac2882053f46c7677da43f2e0c4e963125d181"},{"id":270467942,"filename":"mcp-domaintools_linux_arm64.tar.gz","url":"https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.2.0/mcp-domaintools_linux_arm64.tar.gz","sha256":"337412ca627277e2ee13b114b34229d3d97ecb8ff792bad38dfcf1f420218908"},{"id":270467957,"filename":"mcp-domaintools_linux_x86_64.tar.gz","url":"https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.2.0/mcp-domaintools_linux_x86_64.tar.gz","sha256":"01b1e47f4783f1e816d9be255023a9580a8e797708edba8edf316df9f89d0544"}]}
+# TAPGEN_CACHE: {"tag":"v1.3.0","repository":"patrickdappollonio/mcp-domaintools","cached_at":"2025-07-18T16:04:19.733720495-04:00","assets":[{"id":274187109,"filename":"mcp-domaintools_darwin_arm64.tar.gz","url":"https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.3.0/mcp-domaintools_darwin_arm64.tar.gz","sha256":"1eef86c32ea3812340bbf06ecfe9a36b480fe9c4fdef89c790bd28cf89a3cb2e"},{"id":274187111,"filename":"mcp-domaintools_darwin_x86_64.tar.gz","url":"https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.3.0/mcp-domaintools_darwin_x86_64.tar.gz","sha256":"0b58818edcf6aec1fb35671642cb8cb04327df503d0adbbba0cf6526d03930b0"},{"id":274187112,"filename":"mcp-domaintools_linux_arm.tar.gz","url":"https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.3.0/mcp-domaintools_linux_arm.tar.gz","sha256":"a07f5e84d882d835cf19a19bac7a969a8efdd3772c4eaf72cfa310813cef771f"},{"id":274187120,"filename":"mcp-domaintools_linux_arm64.tar.gz","url":"https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.3.0/mcp-domaintools_linux_arm64.tar.gz","sha256":"60353f145e02e2d428021b4999ef57df0500bb228e61d70d0c6d1d3700bdb35b"},{"id":274187119,"filename":"mcp-domaintools_linux_x86_64.tar.gz","url":"https://github.com/patrickdappollonio/mcp-domaintools/releases/download/v1.3.0/mcp-domaintools_linux_x86_64.tar.gz","sha256":"576590b6a9fac7234232b2a873fc670c364246a97eada04b0ada9645510fcc0e"}]}
