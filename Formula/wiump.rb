@@ -1,7 +1,7 @@
 class Wiump < Formula
   desc "Who is using my port? A simple application to tell you what app is using your port."
   homepage "https://github.com/patrickdappollonio/wiump"
-  version "1.1.0"
+  version "1.1.1"
   license "MIT"
   #
   # MacOS builds
@@ -9,13 +9,13 @@ class Wiump < Formula
   on_macos do
     # MacOS ARM64 builds
     if Hardware::CPU.arm?
-      sha256 "3e6bbbe90ac3d3c62cffe7048643af422fc1f2db4625337a7b8b762d0e716020"
-      url "https://github.com/patrickdappollonio/wiump/releases/download/v1.1.0/wiump-v1.1.0-darwin-arm64.tar.gz"
+      sha256 "69a005b4cc2d9c5d78df2d3216dad058311d97c3e9dae3e1107830fa7384a6a9"
+      url "https://github.com/patrickdappollonio/wiump/releases/download/v1.1.1/wiump-v1.1.1-darwin-arm64.tar.gz"
     end
     # MacOS Intel builds
     if Hardware::CPU.intel?
-      sha256 "f1b7119ff72eb08bfbef09bdd4e2e7d109da2229491fd7f5eb83f9755126e550"
-      url "https://github.com/patrickdappollonio/wiump/releases/download/v1.1.0/wiump-v1.1.0-darwin-x86_64.tar.gz"
+      sha256 "8d91feec33074321e7d9c50e0a4aea314f3aa2921a555899f6d5bcdc0d67ed15"
+      url "https://github.com/patrickdappollonio/wiump/releases/download/v1.1.1/wiump-v1.1.1-darwin-x86_64.tar.gz"
     end
   end
   #
@@ -24,13 +24,13 @@ class Wiump < Formula
   on_linux do
     # Linux Intel 64bit builds
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
-      sha256 "4d4d34e41615500ca0ef1a7dc0cf0e54c00e7570eed1f8fa466445d6e034b7f8"
-      url "https://github.com/patrickdappollonio/wiump/releases/download/v1.1.0/wiump-v1.1.0-linux-x86_64.tar.gz"
+      sha256 "e325fffb1de9891e9947b3390daf8c95bca2b5b02de59dde6b0d9d09b4f3b70b"
+      url "https://github.com/patrickdappollonio/wiump/releases/download/v1.1.1/wiump-v1.1.1-linux-x86_64.tar.gz"
     end
     # Linux ARM64 builds
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      sha256 "a40d790f7734419e4b06a6c5bd8b6d19445f81c4d1327ded379e729afe0dc9bf"
-      url "https://github.com/patrickdappollonio/wiump/releases/download/v1.1.0/wiump-v1.1.0-linux-arm64.tar.gz"
+      sha256 "40168e93ff22156795ea99f97365153c68dbff479c04f0546f6c305054264465"
+      url "https://github.com/patrickdappollonio/wiump/releases/download/v1.1.1/wiump-v1.1.1-linux-arm64.tar.gz"
     end
   end
 
@@ -43,4 +43,4 @@ end
 # GitHub release assets when they haven't changed. This improves
 # performance and reduces load on GitHub servers.
 # ------------------------------------------------------------------
-# TAPGEN_CACHE: {"tag":"v1.1.0","repository":"patrickdappollonio/wiump","cached_at":"2025-07-22T03:06:12.360457691-04:00","assets":[{"id":275168116,"filename":"wiump-v1.1.0-darwin-arm64.tar.gz","url":"https://github.com/patrickdappollonio/wiump/releases/download/v1.1.0/wiump-v1.1.0-darwin-arm64.tar.gz","sha256":"3e6bbbe90ac3d3c62cffe7048643af422fc1f2db4625337a7b8b762d0e716020"},{"id":275168124,"filename":"wiump-v1.1.0-darwin-x86_64.tar.gz","url":"https://github.com/patrickdappollonio/wiump/releases/download/v1.1.0/wiump-v1.1.0-darwin-x86_64.tar.gz","sha256":"f1b7119ff72eb08bfbef09bdd4e2e7d109da2229491fd7f5eb83f9755126e550"},{"id":275168227,"filename":"wiump-v1.1.0-linux-arm64.tar.gz","url":"https://github.com/patrickdappollonio/wiump/releases/download/v1.1.0/wiump-v1.1.0-linux-arm64.tar.gz","sha256":"a40d790f7734419e4b06a6c5bd8b6d19445f81c4d1327ded379e729afe0dc9bf"},{"id":275168125,"filename":"wiump-v1.1.0-linux-x86_64.tar.gz","url":"https://github.com/patrickdappollonio/wiump/releases/download/v1.1.0/wiump-v1.1.0-linux-x86_64.tar.gz","sha256":"4d4d34e41615500ca0ef1a7dc0cf0e54c00e7570eed1f8fa466445d6e034b7f8"}]}
+# TAPGEN_CACHE: {"tag":"v1.1.1","repository":"patrickdappollonio/wiump","cached_at":"2025-07-23T02:06:02.745722541-04:00","assets":[{"id":275490853,"filename":"wiump-v1.1.1-darwin-arm64.tar.gz","url":"https://github.com/patrickdappollonio/wiump/releases/download/v1.1.1/wiump-v1.1.1-darwin-arm64.tar.gz","sha256":"69a005b4cc2d9c5d78df2d3216dad058311d97c3e9dae3e1107830fa7384a6a9"},{"id":275490862,"filename":"wiump-v1.1.1-darwin-x86_64.tar.gz","url":"https://github.com/patrickdappollonio/wiump/releases/download/v1.1.1/wiump-v1.1.1-darwin-x86_64.tar.gz","sha256":"8d91feec33074321e7d9c50e0a4aea314f3aa2921a555899f6d5bcdc0d67ed15"},{"id":275490988,"filename":"wiump-v1.1.1-linux-arm64.tar.gz","url":"https://github.com/patrickdappollonio/wiump/releases/download/v1.1.1/wiump-v1.1.1-linux-arm64.tar.gz","sha256":"40168e93ff22156795ea99f97365153c68dbff479c04f0546f6c305054264465"},{"id":275490888,"filename":"wiump-v1.1.1-linux-x86_64.tar.gz","url":"https://github.com/patrickdappollonio/wiump/releases/download/v1.1.1/wiump-v1.1.1-linux-x86_64.tar.gz","sha256":"e325fffb1de9891e9947b3390daf8c95bca2b5b02de59dde6b0d9d09b4f3b70b"}]}
