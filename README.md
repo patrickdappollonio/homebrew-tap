@@ -26,6 +26,7 @@ The list of available applications is:
 * [`mcp-domaintools`](#mcp-domaintools)
 * [`context-generator`](#context-generator)
 * [`mcp-kubernetes-ro`](#mcp-kubernetes-ro)
+* [`mockingjay`](#mockingjay)
 
 ## Applications
 
@@ -251,4 +252,19 @@ brew install patrickdappollonio/tap/context-generator
 
 ```bash
 brew install patrickdappollonio/tap/mcp-kubernetes-ro
+```
+
+### `mockingjay`
+
+<dl>
+  <dt><strong>Description:</strong></dt>
+  <dd>A YAML-configurable HTTP server that uses Go templates to create dynamic mock APIs with regex routing, middleware support, and 100+ helper functions.</dd>
+  <dt><strong>License:</strong></dt>
+  <dd>MIT</dd>
+  <dt><strong>Repository:</strong></dt>
+  <dd><a href="https://github.com/patrickdappollonio/mockingjay"><code>patrickdappollonio/mockingjay</code></a></dd>
+</dl>
+
+```bash
+brew install patrickdappollonio/tap/mockingjay
 ```
