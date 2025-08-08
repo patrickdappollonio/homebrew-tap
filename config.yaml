@@ -64,3 +64,7 @@
   repository: patrickdappollonio/mcp-kubernetes-ro
   description: "An MCP server providing read-only access to Kubernetes clusters for AI assistants."
   license: MIT
+- name: mockingjay
+  repository: patrickdappollonio/mockingjay
+  description: "A YAML-configurable HTTP server that uses Go templates to create dynamic mock APIs with regex routing, middleware support, and 100+ helper functions."
+  license: MIT
