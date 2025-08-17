@@ -1,7 +1,7 @@
 class ContextGenerator < Formula
   desc "A fast, efficient command-line tool written in Rust that generates copy-pastable context from your source code, perfect for providing to AI assistants like ChatGPT, Claude, or Copilot."
   homepage "https://github.com/patrickdappollonio/context-generator"
-  version "1.0.1"
+  version "1.1.0"
   license "MIT"
   #
   # MacOS builds
@@ -9,13 +9,13 @@ class ContextGenerator < Formula
   on_macos do
     # MacOS ARM64 builds
     if Hardware::CPU.arm?
-      sha256 "b431a276dd5a9773761274c6a6623f62fad675e6b017c35103e86453aa939c76"
-      url "https://github.com/patrickdappollonio/context-generator/releases/download/v1.0.1/context-generator-v1.0.1-darwin-arm64.tar.gz"
+      sha256 "7834197d608cd88ff7bcae18f71929c5a439e627cff2b2c74e8a5e5d45a70544"
+      url "https://github.com/patrickdappollonio/context-generator/releases/download/v1.1.0/context-generator-v1.1.0-darwin-arm64.tar.gz"
     end
     # MacOS Intel builds
     if Hardware::CPU.intel?
-      sha256 "1d01e9fe2207cf62f3414af9cf5d646dac9eb882235bff5645081ce62bef662f"
-      url "https://github.com/patrickdappollonio/context-generator/releases/download/v1.0.1/context-generator-v1.0.1-darwin-x86_64.tar.gz"
+      sha256 "229968a53e58f5c4d58c8d3ace2e0fba19d74055dbbdf2154a02d55c94a6eff1"
+      url "https://github.com/patrickdappollonio/context-generator/releases/download/v1.1.0/context-generator-v1.1.0-darwin-x86_64.tar.gz"
     end
   end
   #
@@ -24,13 +24,13 @@ class ContextGenerator < Formula
   on_linux do
     # Linux Intel 64bit builds
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
-      sha256 "2452870af805cfddd54449b6f50f8c5659e9af5b2026ad153927de80ec71cddd"
-      url "https://github.com/patrickdappollonio/context-generator/releases/download/v1.0.1/context-generator-v1.0.1-linux-x86_64.tar.gz"
+      sha256 "77745f64ff2a4882bafea986b1324a5d4cd9bf6775442bb53329b06c72a14a45"
+      url "https://github.com/patrickdappollonio/context-generator/releases/download/v1.1.0/context-generator-v1.1.0-linux-x86_64.tar.gz"
     end
     # Linux ARM64 builds
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      sha256 "3f56e91faa3f3b68fd21133ae99f628eebecfd6ede6934b67224fee4655df1ba"
-      url "https://github.com/patrickdappollonio/context-generator/releases/download/v1.0.1/context-generator-v1.0.1-linux-arm64.tar.gz"
+      sha256 "ef8080d72a428f02de7e617f188a3068343da4d09e78efd59f7ee2312694e5d3"
+      url "https://github.com/patrickdappollonio/context-generator/releases/download/v1.1.0/context-generator-v1.1.0-linux-arm64.tar.gz"
     end
   end
 
@@ -43,4 +43,4 @@ end
 # GitHub release assets when they haven't changed. This improves
 # performance and reduces load on GitHub servers.
 # ------------------------------------------------------------------
-# TAPGEN_CACHE: {"tag":"v1.0.1","repository":"patrickdappollonio/context-generator","cached_at":"2025-07-25T00:17:11.305858395-04:00","assets":[{"id":276181313,"filename":"context-generator-v1.0.1-darwin-arm64.tar.gz","url":"https://github.com/patrickdappollonio/context-generator/releases/download/v1.0.1/context-generator-v1.0.1-darwin-arm64.tar.gz","sha256":"b431a276dd5a9773761274c6a6623f62fad675e6b017c35103e86453aa939c76"},{"id":276181300,"filename":"context-generator-v1.0.1-darwin-x86_64.tar.gz","url":"https://github.com/patrickdappollonio/context-generator/releases/download/v1.0.1/context-generator-v1.0.1-darwin-x86_64.tar.gz","sha256":"1d01e9fe2207cf62f3414af9cf5d646dac9eb882235bff5645081ce62bef662f"},{"id":276181503,"filename":"context-generator-v1.0.1-linux-arm64.tar.gz","url":"https://github.com/patrickdappollonio/context-generator/releases/download/v1.0.1/context-generator-v1.0.1-linux-arm64.tar.gz","sha256":"3f56e91faa3f3b68fd21133ae99f628eebecfd6ede6934b67224fee4655df1ba"},{"id":276181523,"filename":"context-generator-v1.0.1-linux-x86_64-musl.tar.gz","url":"https://github.com/patrickdappollonio/context-generator/releases/download/v1.0.1/context-generator-v1.0.1-linux-x86_64-musl.tar.gz","sha256":"db4c66fb0be5c482e910fadde4c664cc58ede19991e63cbf1005ce29bd1f880f"},{"id":276181258,"filename":"context-generator-v1.0.1-linux-x86_64.tar.gz","url":"https://github.com/patrickdappollonio/context-generator/releases/download/v1.0.1/context-generator-v1.0.1-linux-x86_64.tar.gz","sha256":"2452870af805cfddd54449b6f50f8c5659e9af5b2026ad153927de80ec71cddd"}]}
+# TAPGEN_CACHE: {"tag":"v1.1.0","repository":"patrickdappollonio/context-generator","cached_at":"2025-08-16T20:18:28.526983098-04:00","assets":[{"id":283222722,"filename":"context-generator-v1.1.0-darwin-arm64.tar.gz","url":"https://github.com/patrickdappollonio/context-generator/releases/download/v1.1.0/context-generator-v1.1.0-darwin-arm64.tar.gz","sha256":"7834197d608cd88ff7bcae18f71929c5a439e627cff2b2c74e8a5e5d45a70544"},{"id":283222889,"filename":"context-generator-v1.1.0-darwin-x86_64.tar.gz","url":"https://github.com/patrickdappollonio/context-generator/releases/download/v1.1.0/context-generator-v1.1.0-darwin-x86_64.tar.gz","sha256":"229968a53e58f5c4d58c8d3ace2e0fba19d74055dbbdf2154a02d55c94a6eff1"},{"id":283223518,"filename":"context-generator-v1.1.0-linux-arm64.tar.gz","url":"https://github.com/patrickdappollonio/context-generator/releases/download/v1.1.0/context-generator-v1.1.0-linux-arm64.tar.gz","sha256":"ef8080d72a428f02de7e617f188a3068343da4d09e78efd59f7ee2312694e5d3"},{"id":283223548,"filename":"context-generator-v1.1.0-linux-x86_64-musl.tar.gz","url":"https://github.com/patrickdappollonio/context-generator/releases/download/v1.1.0/context-generator-v1.1.0-linux-x86_64-musl.tar.gz","sha256":"ccb3223beaf9f5a247088dde165d19d0b2d7f55c16da5e35fa06532efcc3f331"},{"id":283222758,"filename":"context-generator-v1.1.0-linux-x86_64.tar.gz","url":"https://github.com/patrickdappollonio/context-generator/releases/download/v1.1.0/context-generator-v1.1.0-linux-x86_64.tar.gz","sha256":"77745f64ff2a4882bafea986b1324a5d4cd9bf6775442bb53329b06c72a14a45"}]}
