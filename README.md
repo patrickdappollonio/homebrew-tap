@@ -23,7 +23,7 @@ The list of available applications is:
 * [`reverse-proxy-host`](#reverse-proxy-host)
 * [`helm-list-charts`](#helm-list-charts)
 * [`wiump`](#wiump)
-* [`mcp-domaintools`](#mcp-domaintools)
+* [`mcp-netutils`](#mcp-netutils)
 * [`context-generator`](#context-generator)
 * [`mcp-kubernetes-ro`](#mcp-kubernetes-ro)
 * [`mockingjay`](#mockingjay)
@@ -209,7 +209,7 @@ brew install patrickdappollonio/tap/helm-list-charts
 brew install patrickdappollonio/tap/wiump
 ```
 
-### `mcp-domaintools`
+### `mcp-netutils`
 
 <dl>
   <dt><strong>Description:</strong></dt>
@@ -217,11 +217,11 @@ brew install patrickdappollonio/tap/wiump
   <dt><strong>License:</strong></dt>
   <dd>MIT</dd>
   <dt><strong>Repository:</strong></dt>
-  <dd><a href="https://github.com/patrickdappollonio/mcp-domaintools"><code>patrickdappollonio/mcp-domaintools</code></a></dd>
+  <dd><a href="https://github.com/patrickdappollonio/mcp-netutils"><code>patrickdappollonio/mcp-netutils</code></a></dd>
 </dl>
 
 ```bash
-brew install patrickdappollonio/tap/mcp-domaintools
+brew install patrickdappollonio/tap/mcp-netutils
 ```
 
 ### `context-generator`
