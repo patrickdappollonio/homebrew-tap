@@ -52,8 +52,8 @@
   repository: patrickdappollonio/wiump
   description: "Who is using my port? A simple application to tell you what app is using your port."
   license: MIT
-- name: mcp-domaintools
-  repository: patrickdappollonio/mcp-domaintools
+- name: mcp-netutils
+  repository: patrickdappollonio/mcp-netutils
   description: "An MCP server via STDIO to query DNS and WHOIS information."
   license: MIT
 - name: context-generator
