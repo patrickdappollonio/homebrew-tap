@@ -48,7 +48,7 @@ func (e *HTTPError) Unwrap() error {
 
 // Compiled regular expressions for platform and architecture detection.
 var (
-	reARM64  = regexp.MustCompile(`(\b|_|-)arm64(\b|_|-)`)
+	reARM64  = regexp.MustCompile(`(\b|_|-)(arm64|aarch64)(\b|_|-)`)
 	reARM    = regexp.MustCompile(`(\b|_|-)arm(\b|_|-)`)
 	reLinux  = regexp.MustCompile(`(\b|_|-)linux(\b|_|-)`)
 	re64Bits = regexp.MustCompile(`(\b|_|-)(amd64|x?86_64)(\b|_|-)`)

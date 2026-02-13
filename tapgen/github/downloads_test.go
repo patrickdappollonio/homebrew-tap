@@ -32,6 +32,16 @@ func TestChecks(t *testing.T) {
 			WantARM:   true,
 			WantARM64: false,
 		},
+		{
+			URL:       "tool_linux_aarch64.tar.gz",
+			WantLinux: true,
+			WantARM64: true,
+		},
+		{
+			URL:       "tool-darwin-aarch64.tar.gz",
+			WantMacOS: true,
+			WantARM64: true,
+		},
 	}
 
 	for _, c := range cases {
