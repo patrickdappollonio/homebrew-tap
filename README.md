@@ -27,6 +27,7 @@ The list of available applications is:
 * [`context-generator`](#context-generator)
 * [`mcp-kubernetes-ro`](#mcp-kubernetes-ro)
 * [`mockingjay`](#mockingjay)
+* [`undrained`](#undrained)
 
 ## Applications
 
@@ -267,4 +268,19 @@ brew install patrickdappollonio/tap/mcp-kubernetes-ro
 
 ```bash
 brew install patrickdappollonio/tap/mockingjay
+```
+
+### `undrained`
+
+<dl>
+  <dt><strong>Description:</strong></dt>
+  <dd>A CLI tool that audits Kubernetes PodDisruptionBudgets and flags configurations that block pod evictions during voluntary disruptions like node drains, cluster upgrades, and scaling operations.</dd>
+  <dt><strong>License:</strong></dt>
+  <dd>MIT</dd>
+  <dt><strong>Repository:</strong></dt>
+  <dd><a href="https://github.com/patrickdappollonio/undrained"><code>patrickdappollonio/undrained</code></a></dd>
+</dl>
+
+```bash
+brew install patrickdappollonio/tap/undrained
 ```
