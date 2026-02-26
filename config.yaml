@@ -68,3 +68,7 @@
   repository: patrickdappollonio/mockingjay
   description: "A YAML-configurable HTTP server that uses Go templates to create dynamic mock APIs with regex routing, middleware support, and 100+ helper functions."
   license: MIT
+- name: undrained
+  repository: patrickdappollonio/undrained
+  description: "A CLI tool that audits Kubernetes PodDisruptionBudgets and flags configurations that block pod evictions during voluntary disruptions like node drains, cluster upgrades, and scaling operations."
+  license: MIT
