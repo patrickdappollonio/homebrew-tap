@@ -1,7 +1,7 @@
 class WaitFor < Formula
   desc "A small, zero dependencies app that can be used as an init container to ping resources and check if they're available."
   homepage "https://github.com/patrickdappollonio/wait-for"
-  version "1.2.1"
+  version "1.2.2"
   license "MIT"
   #
   # MacOS builds
@@ -9,13 +9,13 @@ class WaitFor < Formula
   on_macos do
     # MacOS ARM64 builds
     if Hardware::CPU.arm?
-      sha256 "e9a50e98f625989df85a079e8a74cd450c5e65885b55161b529ff607bcdab9e3"
-      url "https://github.com/patrickdappollonio/wait-for/releases/download/v1.2.1/wait-for_darwin_arm64.tar.gz"
+      sha256 "93d68d2ecd013b57c31a6cae839edb2d8424846916104f96d8c60bcb9c302142"
+      url "https://github.com/patrickdappollonio/wait-for/releases/download/v1.2.2/wait-for_darwin_arm64.tar.gz"
     end
     # MacOS Intel builds
     if Hardware::CPU.intel?
-      sha256 "a5df170cbc24677a51b5ab7fc492bc730e3ff41070b04b82bd23ab44835c7c6f"
-      url "https://github.com/patrickdappollonio/wait-for/releases/download/v1.2.1/wait-for_darwin_x86_64.tar.gz"
+      sha256 "ea7803004da2f4395ae8291711b43af07f15b51cbb344d1a2bf2f9a8f9a730b7"
+      url "https://github.com/patrickdappollonio/wait-for/releases/download/v1.2.2/wait-for_darwin_x86_64.tar.gz"
     end
   end
   #
@@ -24,18 +24,18 @@ class WaitFor < Formula
   on_linux do
     # Linux Intel 64bit builds
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
-      sha256 "81f2af850251bb1afad9a1fa4f675301ab2869ecdd1076d7a263c5506270e8bd"
-      url "https://github.com/patrickdappollonio/wait-for/releases/download/v1.2.1/wait-for_linux_x86_64.tar.gz"
+      sha256 "39ef3332548cbc116384d993be7d8be789d0cb59e9a57c0bc590b5cb499767f8"
+      url "https://github.com/patrickdappollonio/wait-for/releases/download/v1.2.2/wait-for_linux_x86_64.tar.gz"
     end
     # Linux ARM64 builds
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      sha256 "b2b49496749663912423e76a216d96a0dfe281006e45fab1b828510a2a51f072"
-      url "https://github.com/patrickdappollonio/wait-for/releases/download/v1.2.1/wait-for_linux_arm64.tar.gz"
+      sha256 "75335d564d7b4ad8f29306d1b2f92a528ad6a5b062c3ea114eeab5149070d282"
+      url "https://github.com/patrickdappollonio/wait-for/releases/download/v1.2.2/wait-for_linux_arm64.tar.gz"
     end
     # Linux ARM (non-64) builds
     if Hardware::CPU.arm? && !Hardware::CPU.is_64_bit?
-      sha256 "0d4bcea5e738e9c627f59ebd9de3750053211611b6b0df39d4f611654f604ccc"
-      url "https://github.com/patrickdappollonio/wait-for/releases/download/v1.2.1/wait-for_linux_arm.tar.gz"
+      sha256 "574d69f409579c08ccb25ebe83943f4c9179dae574ad2135f97f3779cfa544dc"
+      url "https://github.com/patrickdappollonio/wait-for/releases/download/v1.2.2/wait-for_linux_arm.tar.gz"
     end
   end
 
@@ -51,4 +51,4 @@ end
 # GitHub release assets when they haven't changed. This improves
 # performance and reduces load on GitHub servers.
 # ------------------------------------------------------------------
-# TAPGEN_CACHE: {"tag":"v1.2.1","repository":"patrickdappollonio/wait-for","cached_at":"2025-07-09T00:26:02.974126651-04:00","assets":[{"id":219575872,"filename":"wait-for_darwin_arm64.tar.gz","url":"https://github.com/patrickdappollonio/wait-for/releases/download/v1.2.1/wait-for_darwin_arm64.tar.gz","sha256":"e9a50e98f625989df85a079e8a74cd450c5e65885b55161b529ff607bcdab9e3"},{"id":219575873,"filename":"wait-for_darwin_x86_64.tar.gz","url":"https://github.com/patrickdappollonio/wait-for/releases/download/v1.2.1/wait-for_darwin_x86_64.tar.gz","sha256":"a5df170cbc24677a51b5ab7fc492bc730e3ff41070b04b82bd23ab44835c7c6f"},{"id":219575868,"filename":"wait-for_linux_arm.tar.gz","url":"https://github.com/patrickdappollonio/wait-for/releases/download/v1.2.1/wait-for_linux_arm.tar.gz","sha256":"0d4bcea5e738e9c627f59ebd9de3750053211611b6b0df39d4f611654f604ccc"},{"id":219575866,"filename":"wait-for_linux_arm64.tar.gz","url":"https://github.com/patrickdappollonio/wait-for/releases/download/v1.2.1/wait-for_linux_arm64.tar.gz","sha256":"b2b49496749663912423e76a216d96a0dfe281006e45fab1b828510a2a51f072"},{"id":219575869,"filename":"wait-for_linux_x86_64.tar.gz","url":"https://github.com/patrickdappollonio/wait-for/releases/download/v1.2.1/wait-for_linux_x86_64.tar.gz","sha256":"81f2af850251bb1afad9a1fa4f675301ab2869ecdd1076d7a263c5506270e8bd"}]}
+# TAPGEN_CACHE: {"tag":"v1.2.2","repository":"patrickdappollonio/wait-for","cached_at":"2026-03-12T02:22:33.570228501-04:00","assets":[{"id":372115014,"filename":"wait-for_darwin_arm64.tar.gz","url":"https://github.com/patrickdappollonio/wait-for/releases/download/v1.2.2/wait-for_darwin_arm64.tar.gz","sha256":"93d68d2ecd013b57c31a6cae839edb2d8424846916104f96d8c60bcb9c302142"},{"id":372115013,"filename":"wait-for_darwin_x86_64.tar.gz","url":"https://github.com/patrickdappollonio/wait-for/releases/download/v1.2.2/wait-for_darwin_x86_64.tar.gz","sha256":"ea7803004da2f4395ae8291711b43af07f15b51cbb344d1a2bf2f9a8f9a730b7"},{"id":372115012,"filename":"wait-for_linux_arm.tar.gz","url":"https://github.com/patrickdappollonio/wait-for/releases/download/v1.2.2/wait-for_linux_arm.tar.gz","sha256":"574d69f409579c08ccb25ebe83943f4c9179dae574ad2135f97f3779cfa544dc"},{"id":372115001,"filename":"wait-for_linux_arm64.tar.gz","url":"https://github.com/patrickdappollonio/wait-for/releases/download/v1.2.2/wait-for_linux_arm64.tar.gz","sha256":"75335d564d7b4ad8f29306d1b2f92a528ad6a5b062c3ea114eeab5149070d282"},{"id":372115000,"filename":"wait-for_linux_x86_64.tar.gz","url":"https://github.com/patrickdappollonio/wait-for/releases/download/v1.2.2/wait-for_linux_x86_64.tar.gz","sha256":"39ef3332548cbc116384d993be7d8be789d0cb59e9a57c0bc590b5cb499767f8"}]}
