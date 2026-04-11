@@ -28,6 +28,7 @@ The list of available applications is:
 * [`mcp-kubernetes-ro`](#mcp-kubernetes-ro)
 * [`mockingjay`](#mockingjay)
 * [`undrained`](#undrained)
+* [`dux`](#dux)
 
 ## Applications
 
@@ -283,4 +284,19 @@ brew install patrickdappollonio/tap/mockingjay
 
 ```bash
 brew install patrickdappollonio/tap/undrained
+```
+
+### `dux`
+
+<dl>
+  <dt><strong>Description:</strong></dt>
+  <dd>Dux is a terminal UI that lets you run multiple AI coding agents side by side, each in its own git worktree, with full companion terminals, macros, commit generation, and a command palette that knows more tricks than you do.</dd>
+  <dt><strong>License:</strong></dt>
+  <dd>MIT</dd>
+  <dt><strong>Repository:</strong></dt>
+  <dd><a href="https://github.com/patrickdappollonio/dux"><code>patrickdappollonio/dux</code></a></dd>
+</dl>
+
+```bash
+brew install patrickdappollonio/tap/dux
 ```
