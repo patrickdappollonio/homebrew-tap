@@ -166,7 +166,7 @@ func TestTryUseCache(t *testing.T) {
 		},
 	}
 
-	downloads := tryUseCache(assets, cache)
+	downloads := tryUseCache(assets, cache, nil)
 	if downloads == nil {
 		t.Error("expected cache hit but got cache miss")
 	}
@@ -179,7 +179,7 @@ func TestTryUseCache(t *testing.T) {
 		{ID: 999, Name: "test1-linux-amd64.tar.gz", BrowserDownloadURL: "https://example.com/test1-linux-amd64.tar.gz"},
 	}
 
-	downloads2 := tryUseCache(assetsChanged, cache)
+	downloads2 := tryUseCache(assetsChanged, cache, nil)
 	if downloads2 != nil {
 		t.Error("expected cache miss but got cache hit")
 	}

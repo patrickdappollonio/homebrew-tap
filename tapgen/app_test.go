@@ -61,6 +61,106 @@ func TestFilterConfigs(t *testing.T) {
 			t.Error("expected error for empty configs")
 		}
 	})
+
+	t.Run("same name as formula and cask returns both", func(t *testing.T) {
+		duplicated := []cfg.Config{
+			{Name: "app1", Repository: "user/app1"},
+			{Name: "app1", Kind: "cask", Repository: "user/app1", AppName: "App1.app"},
+			{Name: "app2", Repository: "user/app2"},
+		}
+
+		result, err := filterConfigs(duplicated, "app1")
+		if err != nil {
+			t.Errorf("unexpected error: %v", err)
+		}
+
+		if len(result) != 2 {
+			t.Fatalf("expected 2 configs; got %d", len(result))
+		}
+
+		if result[0].IsCask() || !result[1].IsCask() {
+			t.Errorf("expected formula then cask; got kinds %q and %q", result[0].Kind, result[1].Kind)
+		}
+	})
+}
+
+func TestOutputFile(t *testing.T) {
+	tests := []struct {
+		name     string
+		config   cfg.Config
+		expected string
+	}{
+		{
+			name:     "formula goes into Formula directory",
+			config:   cfg.Config{Name: "My-App"},
+			expected: filepath.Join("Formula", "my-app.rb"),
+		},
+		{
+			name:     "cask goes into Casks directory",
+			config:   cfg.Config{Name: "My-App", Kind: "cask", AppName: "My App.app"},
+			expected: filepath.Join("Casks", "my-app.rb"),
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := outputFile(tt.config)
+			if result != tt.expected {
+				t.Errorf("outputFile() = %q; expected %q", result, tt.expected)
+			}
+		})
+	}
+}
+
+func TestCleanupOrphanedFormulas(t *testing.T) {
+	tempDir := t.TempDir()
+	t.Chdir(tempDir)
+
+	for _, dir := range []string{"Formula", "Casks"} {
+		if err := os.Mkdir(dir, 0o755); err != nil {
+			t.Fatalf("failed to create %s directory: %v", dir, err)
+		}
+	}
+
+	files := []string{
+		filepath.Join("Formula", "keep.rb"),
+		filepath.Join("Formula", "orphan.rb"),
+		filepath.Join("Casks", "keep.rb"),
+		filepath.Join("Casks", "orphan-cask.rb"),
+	}
+
+	for _, file := range files {
+		if err := os.WriteFile(file, []byte("# formula"), 0o644); err != nil {
+			t.Fatalf("failed to write %s: %v", file, err)
+		}
+	}
+
+	configs := []cfg.Config{
+		{Name: "keep", Repository: "user/keep"},
+		{Name: "keep", Kind: "cask", Repository: "user/keep", AppName: "Keep.app"},
+	}
+
+	if err := cleanupOrphanedFormulas(configs); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	expectations := []struct {
+		file       string
+		wantExists bool
+	}{
+		{filepath.Join("Formula", "keep.rb"), true},
+		{filepath.Join("Formula", "orphan.rb"), false},
+		{filepath.Join("Casks", "keep.rb"), true},
+		{filepath.Join("Casks", "orphan-cask.rb"), false},
+	}
+
+	for _, e := range expectations {
+		_, err := os.Stat(e.file)
+		exists := err == nil
+		if exists != e.wantExists {
+			t.Errorf("expected %s exists=%v; got %v", e.file, e.wantExists, exists)
+		}
+	}
 }
 
 func TestReadFileIfExists(t *testing.T) {

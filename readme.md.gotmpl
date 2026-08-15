@@ -13,7 +13,7 @@ For instructions on how this repository works, please check [`USING.md`](./USING
 The list of available applications is:
 
 {{- range .Configs }}
-* [`{{ .Name }}`](#{{ .Name }})
+* [`{{ .Name }}`](#{{ .Name }}{{ if .IsCask }}-cask{{ end }}){{ if .IsCask }} (cask){{ end }}
 {{- end }}
 
 ## Applications
@@ -22,7 +22,7 @@ This is the list of available applications supported by this tap:
 
 {{- range .Configs }}
 
-### `{{ .Name }}`
+### `{{ .Name }}`{{ if .IsCask }} (cask){{ end }}
 
 <dl>
   <dt><strong>Description:</strong></dt>
@@ -47,7 +47,7 @@ This is the list of available applications supported by this tap:
 {{- end }}
 
 ```bash
-brew install patrickdappollonio/tap/{{ .Name }}
+brew install {{ if .IsCask }}--cask {{ end }}patrickdappollonio/tap/{{ .Name }}
 ```
 
 {{- end }}

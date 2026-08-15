@@ -70,18 +70,25 @@ func execute(configLocation, targetPackage, readmeTemplate string, cleanupOrphan
 }
 
 // filterConfigs returns the subset of configs to process based on the target package.
+// A name can appear multiple times (e.g. once as a formula and once as a cask), in
+// which case all matching entries are returned.
 func filterConfigs(configs []cfg.Config, targetPackage string) ([]cfg.Config, error) {
 	if targetPackage == "" {
 		return configs, nil
 	}
 
+	var matches []cfg.Config
 	for _, config := range configs {
 		if config.Name == targetPackage {
-			return []cfg.Config{config}, nil
+			matches = append(matches, config)
 		}
 	}
 
-	return nil, fmt.Errorf("package %q not found in configuration", targetPackage)
+	if len(matches) == 0 {
+		return nil, fmt.Errorf("package %q not found in configuration", targetPackage)
+	}
+
+	return matches, nil
 }
 
 // generateFormulas generates Homebrew formula files for the given configs.
@@ -158,9 +165,19 @@ func getArchitecturePriority(download github.Download) int {
 	}
 }
 
-// generateSingleFormula generates a single Homebrew formula file.
+// outputFile returns the path of the generated file for the given config,
+// placing casks in the Casks directory and formulas in the Formula directory.
+func outputFile(config cfg.Config) string {
+	dir := "Formula"
+	if config.IsCask() {
+		dir = "Casks"
+	}
+	return filepath.Join(dir, fmt.Sprintf("%s.rb", strings.ToLower(config.Name)))
+}
+
+// generateSingleFormula generates a single Homebrew formula or cask file.
 func generateSingleFormula(ctx context.Context, token string, config cfg.Config) error {
-	formulaFile := filepath.Join("Formula", fmt.Sprintf("%s.rb", strings.ToLower(config.Name)))
+	formulaFile := outputFile(config)
 
 	// Try to parse existing cache
 	existingCache, err := github.ParseCacheFromFormula(formulaFile)
@@ -171,7 +188,7 @@ func generateSingleFormula(ctx context.Context, token string, config cfg.Config)
 
 	log.Printf("Fetching latest download for %q (repo: %q)", config.Name, config.Repository)
 
-	tag, downloads, newCache, err := github.GetLatestDownloadsWithCache(ctx, token, config.Repository, existingCache)
+	tag, downloads, newCache, err := github.GetLatestDownloadsWithCache(ctx, token, config.Repository, existingCache, config.AssetFilter)
 	if err != nil {
 		return fmt.Errorf("failed to get latest download for %q: %w", config.Name, err)
 	}
@@ -181,7 +198,12 @@ func generateSingleFormula(ctx context.Context, token string, config cfg.Config)
 	// Sort downloads to ensure deterministic output
 	sortDownloads(downloads)
 
-	newFormula, err := template.GenerateFormula(config, tag, downloads, newCache)
+	generate := template.GenerateFormula
+	if config.IsCask() {
+		generate = template.GenerateCask
+	}
+
+	newFormula, err := generate(config, tag, downloads, newCache)
 	if err != nil {
 		return fmt.Errorf("failed to generate formula: %w", err)
 	}
@@ -243,36 +265,44 @@ func getGitHubToken() string {
 	return strings.TrimSpace(os.Getenv("GITHUB_TOKEN"))
 }
 
-// cleanupOrphanedFormulas removes formula files that no longer correspond to apps in the config.
+// cleanupOrphanedFormulas removes formula and cask files that no longer
+// correspond to apps in the config.
 func cleanupOrphanedFormulas(configs []cfg.Config) error {
-	// Create a set of expected formula files
-	expectedFiles := make(map[string]bool)
+	// Create a per-directory set of expected files, since the same name can
+	// exist as both a formula and a cask
+	expectedFiles := make(map[string]map[string]bool)
 	for _, config := range configs {
-		formulaFile := fmt.Sprintf("%s.rb", strings.ToLower(config.Name))
-		expectedFiles[formulaFile] = true
+		dir, file := filepath.Split(outputFile(config))
+		dir = filepath.Clean(dir)
+		if expectedFiles[dir] == nil {
+			expectedFiles[dir] = make(map[string]bool)
+		}
+		expectedFiles[dir][file] = true
 	}
 
-	// Read the Formula directory
-	entries, err := os.ReadDir("Formula")
-	if err != nil {
-		if os.IsNotExist(err) {
-			// Formula directory doesn't exist, nothing to clean up
-			return nil
-		}
-		return fmt.Errorf("failed to read Formula directory: %w", err)
-	}
-
-	// Check each .rb file
-	for _, entry := range entries {
-		if entry.IsDir() || !strings.HasSuffix(entry.Name(), ".rb") {
-			continue
+	for _, dir := range []string{"Formula", "Casks"} {
+		// Read the directory
+		entries, err := os.ReadDir(dir)
+		if err != nil {
+			if os.IsNotExist(err) {
+				// Directory doesn't exist, nothing to clean up
+				continue
+			}
+			return fmt.Errorf("failed to read %s directory: %w", dir, err)
 		}
 
-		if !expectedFiles[entry.Name()] {
-			formulaPath := filepath.Join("Formula", entry.Name())
-			log.Printf("Removing orphaned formula file: %s", formulaPath)
-			if err := os.Remove(formulaPath); err != nil {
-				return fmt.Errorf("failed to remove orphaned formula %q: %w", formulaPath, err)
+		// Check each .rb file
+		for _, entry := range entries {
+			if entry.IsDir() || !strings.HasSuffix(entry.Name(), ".rb") {
+				continue
+			}
+
+			if !expectedFiles[dir][entry.Name()] {
+				formulaPath := filepath.Join(dir, entry.Name())
+				log.Printf("Removing orphaned formula file: %s", formulaPath)
+				if err := os.Remove(formulaPath); err != nil {
+					return fmt.Errorf("failed to remove orphaned formula %q: %w", formulaPath, err)
+				}
 			}
 		}
 	}

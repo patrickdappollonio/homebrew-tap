@@ -123,6 +123,42 @@ func GenerateFormula(config cfg.Config, tag string, downloads []github.Download,
 	return buf.String(), nil
 }
 
+// GenerateCask generates a Homebrew cask from the given configuration and downloads.
+// Casks are macOS-only, so it errors if any download is not for macOS.
+func GenerateCask(config cfg.Config, tag string, downloads []github.Download, cache *github.FormulaCache) (string, error) {
+	payload := FormulaPayload{
+		Config: config,
+		Tag:    tag,
+	}
+
+	// Generate cache comment if cache is provided
+	if cache != nil {
+		cacheComment, err := github.FormatCacheComment(cache)
+		if err != nil {
+			return "", err
+		}
+		payload.CacheComment = cacheComment
+	}
+
+	// Casks only support macOS downloads
+	for _, download := range downloads {
+		if !download.IsMacOS() {
+			return "", fmt.Errorf("cask %q requires all qualifying assets to be for macOS, found %q", config.Name, download.Filename)
+		}
+		payload.MacOSDownloads = append(payload.MacOSDownloads, download)
+	}
+
+	// Deduplicate downloads by architecture to prevent duplicate conditional blocks
+	payload.MacOSDownloads = deduplicateDownloadsByArchitecture(payload.MacOSDownloads)
+
+	var buf bytes.Buffer
+	if err := compiled.ExecuteTemplate(&buf, "cask.rb.gotmpl", payload); err != nil {
+		return "", err
+	}
+
+	return buf.String(), nil
+}
+
 // GenerateReadme generates a README file from the given configurations using the specified template.
 // The templatePath parameter is required.
 func GenerateReadme(configs []cfg.Config, templatePath string) (string, error) {
