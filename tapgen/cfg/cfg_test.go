@@ -155,6 +155,121 @@ func TestConfig_ValidateLicense(t *testing.T) {
 	}
 }
 
+func TestConfig_IsCask(t *testing.T) {
+	tests := []struct {
+		name     string
+		config   Config
+		expected bool
+	}{
+		{
+			name:     "empty kind defaults to formula",
+			config:   Config{},
+			expected: false,
+		},
+		{
+			name:     "explicit formula kind",
+			config:   Config{Kind: "formula"},
+			expected: false,
+		},
+		{
+			name:     "cask kind",
+			config:   Config{Kind: "cask"},
+			expected: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := tt.config.IsCask()
+			if result != tt.expected {
+				t.Errorf("IsCask() = %v; expected %v", result, tt.expected)
+			}
+		})
+	}
+}
+
+func TestConfig_ValidateKind(t *testing.T) {
+	tests := []struct {
+		name        string
+		config      Config
+		expectError bool
+	}{
+		{
+			name:        "empty kind is valid",
+			config:      Config{Name: "app"},
+			expectError: false,
+		},
+		{
+			name:        "formula kind is valid",
+			config:      Config{Name: "app", Kind: "formula"},
+			expectError: false,
+		},
+		{
+			name:        "cask kind with app_name is valid",
+			config:      Config{Name: "app", Kind: "cask", AppName: "App.app"},
+			expectError: false,
+		},
+		{
+			name:        "cask kind without app_name is invalid",
+			config:      Config{Name: "app", Kind: "cask"},
+			expectError: true,
+		},
+		{
+			name:        "unknown kind is invalid",
+			config:      Config{Name: "app", Kind: "keg"},
+			expectError: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.config.ValidateKind()
+			if tt.expectError && err == nil {
+				t.Error("expected error but got none")
+			}
+			if !tt.expectError && err != nil {
+				t.Errorf("unexpected error: %v", err)
+			}
+		})
+	}
+}
+
+func TestConfig_ValidateAssetFilter(t *testing.T) {
+	tests := []struct {
+		name        string
+		config      Config
+		expectError bool
+	}{
+		{
+			name:        "no asset filter is valid",
+			config:      Config{Name: "app"},
+			expectError: false,
+		},
+		{
+			name:        "valid globs",
+			config:      Config{Name: "app", AssetFilter: []string{"*.tar.gz", "*_darwin_*_app.zip"}},
+			expectError: false,
+		},
+		{
+			name:        "invalid glob pattern",
+			config:      Config{Name: "app", AssetFilter: []string{"[invalid"}},
+			expectError: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.config.ValidateAssetFilter()
+			if tt.expectError && err == nil {
+				t.Error("expected error but got none")
+			}
+			if !tt.expectError && err != nil {
+				t.Errorf("unexpected error: %v", err)
+			}
+		})
+	}
+}
+
 func TestParseConfig(t *testing.T) {
 	// Create a temporary config file
 	tempDir := t.TempDir()
@@ -258,6 +373,92 @@ func TestParseConfig(t *testing.T) {
 		_, err = ParseConfig(invalidLicenseConfigFile)
 		if err == nil {
 			t.Error("expected error for invalid license")
+		}
+	})
+
+	t.Run("cask config with asset filter", func(t *testing.T) {
+		caskConfig := `
+- name: claude-usage-tray
+  repository: patrickdappollonio/claude-usage-tray
+  description: A tray application
+  asset_filter: ["*_linux_*.tar.gz", "*_darwin_*.tar.gz"]
+- name: claude-usage-tray
+  kind: cask
+  repository: patrickdappollonio/claude-usage-tray
+  description: A menu bar application
+  app_name: "Claude Usage Tray.app"
+  cask_binary: true
+  asset_filter: ["*_darwin_*_app.zip"]
+`
+		caskConfigFile := filepath.Join(tempDir, "cask.yaml")
+		err := os.WriteFile(caskConfigFile, []byte(caskConfig), 0o644)
+		if err != nil {
+			t.Fatalf("failed to write cask config file: %v", err)
+		}
+
+		configs, err := ParseConfig(caskConfigFile)
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+
+		if len(configs) != 2 {
+			t.Fatalf("expected 2 configs; got %d", len(configs))
+		}
+
+		if configs[0].IsCask() {
+			t.Error("expected first config to be a formula")
+		}
+
+		if len(configs[0].AssetFilter) != 2 {
+			t.Errorf("expected 2 asset filters; got %d", len(configs[0].AssetFilter))
+		}
+
+		if !configs[1].IsCask() {
+			t.Error("expected second config to be a cask")
+		}
+
+		if configs[1].AppName != "Claude Usage Tray.app" {
+			t.Errorf("expected app name 'Claude Usage Tray.app'; got %q", configs[1].AppName)
+		}
+
+		if !configs[1].CaskBinary {
+			t.Error("expected cask_binary to be true")
+		}
+	})
+
+	t.Run("invalid kind in config", func(t *testing.T) {
+		invalidKindConfig := `
+- name: test-app
+  repository: user/test-app
+  kind: keg
+`
+		invalidKindConfigFile := filepath.Join(tempDir, "invalid-kind.yaml")
+		err := os.WriteFile(invalidKindConfigFile, []byte(invalidKindConfig), 0o644)
+		if err != nil {
+			t.Fatalf("failed to write invalid kind config file: %v", err)
+		}
+
+		_, err = ParseConfig(invalidKindConfigFile)
+		if err == nil {
+			t.Error("expected error for invalid kind")
+		}
+	})
+
+	t.Run("invalid asset filter in config", func(t *testing.T) {
+		invalidFilterConfig := `
+- name: test-app
+  repository: user/test-app
+  asset_filter: ["[invalid"]
+`
+		invalidFilterConfigFile := filepath.Join(tempDir, "invalid-filter.yaml")
+		err := os.WriteFile(invalidFilterConfigFile, []byte(invalidFilterConfig), 0o644)
+		if err != nil {
+			t.Fatalf("failed to write invalid filter config file: %v", err)
+		}
+
+		_, err = ParseConfig(invalidFilterConfigFile)
+		if err == nil {
+			t.Error("expected error for invalid asset filter")
 		}
 	})
 

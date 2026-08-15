@@ -10,6 +10,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"path"
 	"regexp"
 	"strings"
 	"time"
@@ -241,7 +242,7 @@ type releaseAsset struct {
 
 // GetLatestDownloads fetches the latest release downloads for the specified repository.
 // It uses caching to avoid downloading files when asset IDs haven't changed.
-func GetLatestDownloads(ctx context.Context, token, repoName string) (string, []Download, error) {
+func GetLatestDownloads(ctx context.Context, token, repoName string, assetFilters []string) (string, []Download, error) {
 	url := fmt.Sprintf(repositoryURL, repoName)
 
 	var rel release
@@ -253,7 +254,7 @@ func GetLatestDownloads(ctx context.Context, token, repoName string) (string, []
 		return "", nil, fmt.Errorf("no assets found for release %s", rel.TagName)
 	}
 
-	qualifyingAssets, err := filterAndProcessAssets(ctx, token, rel.Assets, rel.Draft, rel.Prerelease)
+	qualifyingAssets, err := filterAndProcessAssets(ctx, token, rel.Assets, rel.Draft, rel.Prerelease, assetFilters)
 	if err != nil {
 		return "", nil, err
 	}
@@ -266,7 +267,7 @@ func GetLatestDownloads(ctx context.Context, token, repoName string) (string, []
 }
 
 // GetLatestDownloadsWithCache fetches the latest release downloads using cache when possible.
-func GetLatestDownloadsWithCache(ctx context.Context, token, repoName string, existingCache *FormulaCache) (string, []Download, *FormulaCache, error) {
+func GetLatestDownloadsWithCache(ctx context.Context, token, repoName string, existingCache *FormulaCache, assetFilters []string) (string, []Download, *FormulaCache, error) {
 	url := fmt.Sprintf(repositoryURL, repoName)
 
 	var rel release
@@ -280,7 +281,7 @@ func GetLatestDownloadsWithCache(ctx context.Context, token, repoName string, ex
 
 	// Check if we can use cache
 	if existingCache != nil && existingCache.Tag == rel.TagName && existingCache.Repository == repoName {
-		if cachedDownloads := tryUseCache(rel.Assets, existingCache); cachedDownloads != nil {
+		if cachedDownloads := tryUseCache(rel.Assets, existingCache, assetFilters); cachedDownloads != nil {
 			log.Printf("Using cached downloads for %s (tag: %s) - no asset changes detected", repoName, rel.TagName)
 			return rel.TagName, cachedDownloads, existingCache, nil
 		}
@@ -288,7 +289,7 @@ func GetLatestDownloadsWithCache(ctx context.Context, token, repoName string, ex
 
 	// Cache miss or invalid - process assets normally
 	log.Printf("Cache miss for %s (tag: %s) - processing assets", repoName, rel.TagName)
-	qualifyingAssets, err := filterAndProcessAssets(ctx, token, rel.Assets, rel.Draft, rel.Prerelease)
+	qualifyingAssets, err := filterAndProcessAssets(ctx, token, rel.Assets, rel.Draft, rel.Prerelease, assetFilters)
 	if err != nil {
 		return "", nil, nil, err
 	}
@@ -329,7 +330,7 @@ func GetLatestDownloadsWithCache(ctx context.Context, token, repoName string, ex
 }
 
 // tryUseCache attempts to use cached downloads if all asset IDs match.
-func tryUseCache(currentAssets []releaseAsset, cache *FormulaCache) []Download {
+func tryUseCache(currentAssets []releaseAsset, cache *FormulaCache, assetFilters []string) []Download {
 	// Create a map of current asset IDs to assets
 	currentAssetMap := make(map[int64]releaseAsset)
 	for _, asset := range currentAssets {
@@ -347,8 +348,8 @@ func tryUseCache(currentAssets []releaseAsset, cache *FormulaCache) []Download {
 				SHA256:   cachedAsset.SHA256,
 			}
 
-			// Verify it's still a valid platform/architecture
-			if isValidPlatform(download) && isValidArchitecture(download) {
+			// Verify it still passes the asset filters and is a valid platform/architecture
+			if matchesAssetFilters(assetFilters, download.Filename) && isValidPlatform(download) && isValidArchitecture(download) {
 				downloads = append(downloads, download)
 			}
 		} else {
@@ -361,7 +362,7 @@ func tryUseCache(currentAssets []releaseAsset, cache *FormulaCache) []Download {
 }
 
 // filterAndProcessAssets filters release assets and calculates their SHA256 hashes.
-func filterAndProcessAssets(ctx context.Context, token string, assets []releaseAsset, isDraft, isPrerelease bool) ([]Download, error) {
+func filterAndProcessAssets(ctx context.Context, token string, assets []releaseAsset, isDraft, isPrerelease bool, assetFilters []string) ([]Download, error) {
 	qualifyingAssets := make([]Download, 0, len(assets))
 
 	for _, asset := range assets {
@@ -372,6 +373,11 @@ func filterAndProcessAssets(ctx context.Context, token string, assets []releaseA
 		download := Download{
 			Filename: asset.Name,
 			URL:      asset.BrowserDownloadURL,
+		}
+
+		if !matchesAssetFilters(assetFilters, download.Filename) {
+			log.Printf("skipping asset %q not matching asset filters", asset.BrowserDownloadURL)
+			continue
 		}
 
 		if !isValidPlatform(download) {
@@ -394,6 +400,23 @@ func filterAndProcessAssets(ctx context.Context, token string, assets []releaseA
 	}
 
 	return qualifyingAssets, nil
+}
+
+// matchesAssetFilters checks if the filename matches any of the shell-style
+// glob patterns. An empty filter list matches every filename; a pattern that
+// fails to compile matches nothing (patterns are validated at config parse time).
+func matchesAssetFilters(assetFilters []string, filename string) bool {
+	if len(assetFilters) == 0 {
+		return true
+	}
+
+	for _, pattern := range assetFilters {
+		if matched, err := path.Match(pattern, filename); err == nil && matched {
+			return true
+		}
+	}
+
+	return false
 }
 
 // isValidPlatform checks if the download is for a supported platform.
