@@ -65,6 +65,7 @@ func TestGenerateCask(t *testing.T) {
 				{Filename: "claude-usage-tray_1.2.3_darwin_amd64_app.zip", URL: "https://example.com/claude-usage-tray_1.2.3_darwin_amd64_app.zip", SHA256: "hashintel"},
 			},
 			want: `cask "claude-usage-tray" do
+  name "Claude Usage Tray"
   desc "A menu bar application"
   homepage "https://github.com/patrickdappollonio/claude-usage-tray"
   version "1.2.3"
@@ -88,6 +89,35 @@ end
 `,
 		},
 		{
+			name: "explicit display name overrides derived one",
+			config: cfg.Config{
+				Name:        "some-app",
+				Kind:        "cask",
+				Repository:  "user/some-app",
+				Description: "Some application",
+				AppName:     "Some App.app",
+				DisplayName: "Some App for macOS",
+			},
+			tag: "v0.1.0",
+			downloads: []github.Download{
+				{Filename: "some-app_0.1.0_darwin_arm64.zip", URL: "https://example.com/some-app_0.1.0_darwin_arm64.zip", SHA256: "hasharm64"},
+			},
+			want: `cask "some-app" do
+  name "Some App for macOS"
+  desc "Some application"
+  homepage "https://github.com/user/some-app"
+  version "0.1.0"
+  # MacOS ARM64 builds
+  on_arm do
+    sha256 "hasharm64"
+    url "https://example.com/some-app_0.1.0_darwin_arm64.zip"
+  end
+
+  app "Some App.app"
+end
+`,
+		},
+		{
 			name: "minimal cask without binary or caveats",
 			config: cfg.Config{
 				Name:        "some-app",
@@ -101,6 +131,7 @@ end
 				{Filename: "some-app_0.1.0_darwin_arm64.zip", URL: "https://example.com/some-app_0.1.0_darwin_arm64.zip", SHA256: "hasharm64"},
 			},
 			want: `cask "some-app" do
+  name "Some App"
   desc "Some application"
   homepage "https://github.com/user/some-app"
   version "0.1.0"

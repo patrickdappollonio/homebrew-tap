@@ -1,4 +1,5 @@
 cask {{ .Config.Name | toLower | quote }} do
+  name {{ .Config.CaskDisplayName | quote }}
   desc {{ .Config.Description | quote }}
   homepage {{ .Config.GenerateURL | quote }}
   version {{ .Tag | trimPrefix "v" | quote }}

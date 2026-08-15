@@ -188,6 +188,39 @@ func TestConfig_IsCask(t *testing.T) {
 	}
 }
 
+func TestConfig_CaskDisplayName(t *testing.T) {
+	tests := []struct {
+		name     string
+		config   Config
+		expected string
+	}{
+		{
+			name:     "explicit display name wins",
+			config:   Config{AppName: "Claude Usage Tray.app", DisplayName: "Claude Usage Tray for macOS"},
+			expected: "Claude Usage Tray for macOS",
+		},
+		{
+			name:     "derived from app name without extension",
+			config:   Config{AppName: "Claude Usage Tray.app"},
+			expected: "Claude Usage Tray",
+		},
+		{
+			name:     "app name without .app suffix is unchanged",
+			config:   Config{AppName: "Claude Usage Tray"},
+			expected: "Claude Usage Tray",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := tt.config.CaskDisplayName()
+			if result != tt.expected {
+				t.Errorf("CaskDisplayName() = %q; expected %q", result, tt.expected)
+			}
+		})
+	}
+}
+
 func TestConfig_ValidateKind(t *testing.T) {
 	tests := []struct {
 		name        string

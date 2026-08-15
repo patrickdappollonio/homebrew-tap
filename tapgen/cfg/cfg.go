@@ -33,6 +33,7 @@ type Config struct {
 	License        string          `yaml:"license"`
 	AssetFilter    []string        `yaml:"asset_filter"`
 	AppName        string          `yaml:"app_name"`
+	DisplayName    string          `yaml:"display_name"`
 	CaskBinary     bool            `yaml:"cask_binary"`
 }
 
@@ -71,6 +72,16 @@ func (c Config) ValidateLicense() error {
 // IsCask returns true if the package should be generated as a Homebrew cask.
 func (c Config) IsCask() bool {
 	return c.Kind == KindCask
+}
+
+// CaskDisplayName returns the human-readable name for a cask, using the
+// explicit display name when set and otherwise deriving it from the app
+// bundle name without its ".app" extension.
+func (c Config) CaskDisplayName() string {
+	if c.DisplayName != "" {
+		return c.DisplayName
+	}
+	return strings.TrimSuffix(c.AppName, ".app")
 }
 
 // ValidateKind checks if the kind is one of the supported values and that
