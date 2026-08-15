@@ -29,6 +29,7 @@ The list of available applications is:
 * [`mockingjay`](#mockingjay)
 * [`undrained`](#undrained)
 * [`dux`](#dux)
+* [`claude-usage-tray`](#claude-usage-tray)
 * [`claude-usage-tray`](#claude-usage-tray-cask) (cask)
 
 ## Applications
@@ -300,6 +301,21 @@ brew install patrickdappollonio/tap/undrained
 
 ```bash
 brew install patrickdappollonio/tap/dux
+```
+
+### `claude-usage-tray`
+
+<dl>
+  <dt><strong>Description:</strong></dt>
+  <dd>A tiny tray app showing your Claude Code 5-hour and weekly usage, straight from the Claude CLI. This formula is for Linux only; on macOS, use the cask instead.</dd>
+  <dt><strong>License:</strong></dt>
+  <dd>MIT</dd>
+  <dt><strong>Repository:</strong></dt>
+  <dd><a href="https://github.com/patrickdappollonio/claude-usage-tray"><code>patrickdappollonio/claude-usage-tray</code></a></dd>
+</dl>
+
+```bash
+brew install patrickdappollonio/tap/claude-usage-tray
 ```
 
 ### `claude-usage-tray` (cask)
