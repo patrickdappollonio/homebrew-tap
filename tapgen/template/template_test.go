@@ -65,9 +65,6 @@ func TestGenerateCask(t *testing.T) {
 				{Filename: "claude-usage-tray_1.2.3_darwin_amd64_app.zip", URL: "https://example.com/claude-usage-tray_1.2.3_darwin_amd64_app.zip", SHA256: "hashintel"},
 			},
 			want: `cask "claude-usage-tray" do
-  name "Claude Usage Tray"
-  desc "A menu bar application"
-  homepage "https://github.com/patrickdappollonio/claude-usage-tray"
   version "1.2.3"
   # MacOS ARM64 builds
   on_arm do
@@ -79,6 +76,10 @@ func TestGenerateCask(t *testing.T) {
     sha256 "hashintel"
     url "https://example.com/claude-usage-tray_1.2.3_darwin_amd64_app.zip"
   end
+
+  name "Claude Usage Tray"
+  desc "A menu bar application"
+  homepage "https://github.com/patrickdappollonio/claude-usage-tray"
 
   app "Claude Usage Tray.app"
   binary "#{appdir}/Claude Usage Tray.app/Contents/MacOS/claude-usage-tray", target: "claude-usage-tray"
@@ -103,15 +104,16 @@ end
 				{Filename: "some-app_0.1.0_darwin_arm64.zip", URL: "https://example.com/some-app_0.1.0_darwin_arm64.zip", SHA256: "hasharm64"},
 			},
 			want: `cask "some-app" do
-  name "Some App for macOS"
-  desc "Some application"
-  homepage "https://github.com/user/some-app"
   version "0.1.0"
   # MacOS ARM64 builds
   on_arm do
     sha256 "hasharm64"
     url "https://example.com/some-app_0.1.0_darwin_arm64.zip"
   end
+
+  name "Some App for macOS"
+  desc "Some application"
+  homepage "https://github.com/user/some-app"
 
   app "Some App.app"
 end
@@ -131,15 +133,16 @@ end
 				{Filename: "some-app_0.1.0_darwin_arm64.zip", URL: "https://example.com/some-app_0.1.0_darwin_arm64.zip", SHA256: "hasharm64"},
 			},
 			want: `cask "some-app" do
-  name "Some App"
-  desc "Some application"
-  homepage "https://github.com/user/some-app"
   version "0.1.0"
   # MacOS ARM64 builds
   on_arm do
     sha256 "hasharm64"
     url "https://example.com/some-app_0.1.0_darwin_arm64.zip"
   end
+
+  name "Some App"
+  desc "Some application"
+  homepage "https://github.com/user/some-app"
 
   app "Some App.app"
 end
