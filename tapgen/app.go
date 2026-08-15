@@ -223,6 +223,10 @@ func writeFormulaFile(filename, content string) error {
 		return nil
 	}
 
+	if err := os.MkdirAll(filepath.Dir(filename), 0o755); err != nil {
+		return fmt.Errorf("failed to create directory for formula file: %w", err)
+	}
+
 	if err := os.WriteFile(filename, []byte(content), 0o644); err != nil {
 		return fmt.Errorf("failed to write formula file: %w", err)
 	}

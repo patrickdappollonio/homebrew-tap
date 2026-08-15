@@ -76,3 +76,10 @@
   repository: patrickdappollonio/dux
   description: "Dux is a terminal UI that lets you run multiple AI coding agents side by side, each in its own git worktree, with full companion terminals, macros, commit generation, and a command palette that knows more tricks than you do."
   license: MIT
+- name: claude-usage-tray
+  kind: cask
+  repository: patrickdappollonio/claude-usage-tray
+  description: "A tiny menu bar app showing your Claude Code 5-hour and weekly usage, straight from the Claude CLI."
+  app_name: "Claude Usage Tray.app"
+  cask_binary: true
+  asset_filter: ["*_darwin_*_app.zip"]

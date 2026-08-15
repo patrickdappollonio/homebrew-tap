@@ -240,6 +240,26 @@ func TestWriteFormulaFile(t *testing.T) {
 		}
 	})
 
+	t.Run("write new file in missing directory creates it", func(t *testing.T) {
+		testFile := filepath.Join(tempDir, "Casks", "new.rb")
+		testContent := "# Cask content"
+
+		err := writeFormulaFile(testFile, testContent)
+		if err != nil {
+			t.Errorf("unexpected error: %v", err)
+		}
+
+		// Verify file was created with correct content
+		content, err := os.ReadFile(testFile)
+		if err != nil {
+			t.Fatalf("failed to read file: %v", err)
+		}
+
+		if string(content) != testContent {
+			t.Errorf("expected content %q; got %q", testContent, string(content))
+		}
+	})
+
 	t.Run("update existing file with different content", func(t *testing.T) {
 		testFile := filepath.Join(tempDir, "existing.rb")
 		oldContent := "# Old content"
