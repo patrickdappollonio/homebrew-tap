@@ -1,7 +1,7 @@
 class ClaudeUsageTray < Formula
   desc "A tiny tray app showing your Claude Code 5-hour and weekly usage, straight from the Claude CLI. This formula is for Linux only; on macOS, use the cask instead."
   homepage "https://github.com/patrickdappollonio/claude-usage-tray"
-  version "1.0.10"
+  version "1.0.11"
   license "MIT"
   #
   # Linux builds
@@ -9,13 +9,13 @@ class ClaudeUsageTray < Formula
   on_linux do
     # Linux Intel 64bit builds
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
-      sha256 "065bb40ac74b497e267e46dd8506f3f8e6b657f464c9adb1d0e446dcab217adf"
-      url "https://github.com/patrickdappollonio/claude-usage-tray/releases/download/v1.0.10/claude-usage-tray_1.0.10_linux_amd64.tar.gz"
+      sha256 "5771055c3da35ebcb7259c34e3749a1f04d35491673411959d6dccb6d455b9c8"
+      url "https://github.com/patrickdappollonio/claude-usage-tray/releases/download/v1.0.11/claude-usage-tray_1.0.11_linux_amd64.tar.gz"
     end
     # Linux ARM64 builds
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      sha256 "9ea618be4beb0284d48f335c3f36ab5112186b99b6f4385399f8625d0247c683"
-      url "https://github.com/patrickdappollonio/claude-usage-tray/releases/download/v1.0.10/claude-usage-tray_1.0.10_linux_arm64.tar.gz"
+      sha256 "f242aba901ca6bf7491a8f7b9acc7b310f15652f46a113737da853f548a4c4e9"
+      url "https://github.com/patrickdappollonio/claude-usage-tray/releases/download/v1.0.11/claude-usage-tray_1.0.11_linux_arm64.tar.gz"
     end
   end
 
@@ -28,4 +28,4 @@ end
 # GitHub release assets when they haven't changed. This improves
 # performance and reduces load on GitHub servers.
 # ------------------------------------------------------------------
-# TAPGEN_CACHE: {"tag":"v1.0.10","repository":"patrickdappollonio/claude-usage-tray","cached_at":"2026-11-01T03:49:56.245537874-05:00","assets":[{"id":697575745,"filename":"claude-usage-tray_1.0.10_linux_amd64.tar.gz","url":"https://github.com/patrickdappollonio/claude-usage-tray/releases/download/v1.0.10/claude-usage-tray_1.0.10_linux_amd64.tar.gz","sha256":"065bb40ac74b497e267e46dd8506f3f8e6b657f464c9adb1d0e446dcab217adf"},{"id":697575807,"filename":"claude-usage-tray_1.0.10_linux_arm64.tar.gz","url":"https://github.com/patrickdappollonio/claude-usage-tray/releases/download/v1.0.10/claude-usage-tray_1.0.10_linux_arm64.tar.gz","sha256":"9ea618be4beb0284d48f335c3f36ab5112186b99b6f4385399f8625d0247c683"}]}
+# TAPGEN_CACHE: {"tag":"v1.0.11","repository":"patrickdappollonio/claude-usage-tray","cached_at":"2026-11-12T10:48:06.86933265-05:00","assets":[{"id":738544596,"filename":"claude-usage-tray_1.0.11_linux_amd64.tar.gz","url":"https://github.com/patrickdappollonio/claude-usage-tray/releases/download/v1.0.11/claude-usage-tray_1.0.11_linux_amd64.tar.gz","sha256":"5771055c3da35ebcb7259c34e3749a1f04d35491673411959d6dccb6d455b9c8"},{"id":738545798,"filename":"claude-usage-tray_1.0.11_linux_arm64.tar.gz","url":"https://github.com/patrickdappollonio/claude-usage-tray/releases/download/v1.0.11/claude-usage-tray_1.0.11_linux_arm64.tar.gz","sha256":"f242aba901ca6bf7491a8f7b9acc7b310f15652f46a113737da853f548a4c4e9"}]}
