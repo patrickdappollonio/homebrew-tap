@@ -1,14 +1,14 @@
 cask "claude-usage-tray" do
-  version "1.0.11"
+  version "1.0.12"
   # MacOS ARM64 builds
   on_arm do
-    sha256 "648acd4d4a3826407eef0538cc5953446ab3512414c561a6679aea82bf1e7b2d"
-    url "https://github.com/patrickdappollonio/claude-usage-tray/releases/download/v1.0.11/claude-usage-tray_1.0.11_darwin_arm64_app.zip"
+    sha256 "6ad68e885a55ed56f43816728dc64d84e39be48e32af37b9f51bd4e57f006678"
+    url "https://github.com/patrickdappollonio/claude-usage-tray/releases/download/v1.0.12/claude-usage-tray_1.0.12_darwin_arm64_app.zip"
   end
   # MacOS Intel builds
   on_intel do
-    sha256 "5216194213284b4cb9e35e33794d874993ea2e85240a5b060ea62524bc71d4a4"
-    url "https://github.com/patrickdappollonio/claude-usage-tray/releases/download/v1.0.11/claude-usage-tray_1.0.11_darwin_amd64_app.zip"
+    sha256 "42a93032e60c49c491cc81233e3438a4f6f9529e0995bd3de2c2315e8f49d00c"
+    url "https://github.com/patrickdappollonio/claude-usage-tray/releases/download/v1.0.12/claude-usage-tray_1.0.12_darwin_amd64_app.zip"
   end
 
   name "Claude Usage Tray"
@@ -23,4 +23,4 @@ end
 # GitHub release assets when they haven't changed. This improves
 # performance and reduces load on GitHub servers.
 # ------------------------------------------------------------------
-# TAPGEN_CACHE: {"tag":"v1.0.11","repository":"patrickdappollonio/claude-usage-tray","cached_at":"2026-11-12T10:48:07.534580144-05:00","assets":[{"id":738557550,"filename":"claude-usage-tray_1.0.11_darwin_amd64_app.zip","url":"https://github.com/patrickdappollonio/claude-usage-tray/releases/download/v1.0.11/claude-usage-tray_1.0.11_darwin_amd64_app.zip","sha256":"5216194213284b4cb9e35e33794d874993ea2e85240a5b060ea62524bc71d4a4"},{"id":738546184,"filename":"claude-usage-tray_1.0.11_darwin_arm64_app.zip","url":"https://github.com/patrickdappollonio/claude-usage-tray/releases/download/v1.0.11/claude-usage-tray_1.0.11_darwin_arm64_app.zip","sha256":"648acd4d4a3826407eef0538cc5953446ab3512414c561a6679aea82bf1e7b2d"}]}
+# TAPGEN_CACHE: {"tag":"v1.0.12","repository":"patrickdappollonio/claude-usage-tray","cached_at":"2026-11-18T03:15:36.706515146-05:00","assets":[{"id":762420915,"filename":"claude-usage-tray_1.0.12_darwin_amd64_app.zip","url":"https://github.com/patrickdappollonio/claude-usage-tray/releases/download/v1.0.12/claude-usage-tray_1.0.12_darwin_amd64_app.zip","sha256":"42a93032e60c49c491cc81233e3438a4f6f9529e0995bd3de2c2315e8f49d00c"},{"id":762411715,"filename":"claude-usage-tray_1.0.12_darwin_arm64_app.zip","url":"https://github.com/patrickdappollonio/claude-usage-tray/releases/download/v1.0.12/claude-usage-tray_1.0.12_darwin_arm64_app.zip","sha256":"6ad68e885a55ed56f43816728dc64d84e39be48e32af37b9f51bd4e57f006678"}]}
